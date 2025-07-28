@@ -2,7 +2,7 @@
 local function Text(target, title, color, fontsize, name)
 local Billboard = Instance.new("BillboardGui", target)
 local TextLabel = Instance.new("TextLabel", Billboard)
-local UIStroke = Instance.new("UIStroke", Text)
+local UIStroke = Instance.new("UIStroke", TextLabel)
 --// Billboard \\
 Billboard.AlwaysOnTop = true
 Billboard.Size = UDim2.new(0,400,0,100)
