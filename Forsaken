@@ -21,7 +21,7 @@ TextLabel.Text = title
 TextLabel.Size = UDim2.new(1,0,0,0)
 TextLabel.Position = UDim2.new(0.5,0,0.7,-35)
 --// UIStroke \\
-UIStroke.Thickness = 1.5
+UIStroke.Thickness = 1
 UIStroke.Color = Color3.new()
 UIStroke.Transparency = 0
 end
@@ -390,7 +390,7 @@ end
 end)
 end})
 
-local ESP = Tabs.Main:AddRightGroupbox('Định vị')
+local ESP = Tabs.Main:AddLeftGroupbox('Định vị')
 
 ESP:AddToggle("KE",{
 Text = "Định vị xác nhân",
@@ -403,7 +403,8 @@ Text(v.HumanoidRootPart, v.Name, Color3.new(1), 14, "Killer_ESP")
 Highlight(v, Color3.new(1), "Killer_ESP")
 end
 end
-KillerESP = workspace.Players.Killers.DescendantAdded:Connect(function(v)
+KillerESP = workspace.Players.DescendantAdded:Connect(function(v)
+wait(2)
 if v:IsA("Model") and v.Parent.Name == "Killers" then
 Text(v.HumanoidRootPart, v.Name, Color3.new(1), 14, "Killer_ESP")
 Highlight(v, Color3.new(1), "Killer_ESP")
@@ -425,7 +426,8 @@ Text(v.HumanoidRootPart, v.Name, Color3.new(0,1), 14, "Survivor_ESP")
 Highlight(v, Color3.new(0,1), "Survivor_ESP")
 end
 end
-SurvivalESP = workspace.Players.Survivors.DescendantAdded:Connect(function(v)
+SurvivalESP = workspace.Players.DescendantAdded:Connect(function(v)
+wait(2)
 if v:IsA("Model") and v.Parent.Name == "Survivors" then
 Text(v.HumanoidRootPart, v.Name, Color3.new(0,1), 14, "Survivor_ESP")
 Highlight(v, Color3.new(0,1), "Survivor_ESP")
@@ -451,6 +453,7 @@ Highlight(v, Color3.new(1), "Items_ESP")
 end
 end
 ItemsESP = workspace.Map.Ingame.DescendantAdded:Connect(function(v)
+wait(1)
 if v:IsA("Model") and v.Name == "BloxyCola" and not v:FindFirstChild("Items_ESP") then
 Text(v, v.Name, Color3.new(1,1), 14, "Items_ESP")
 Highlight(v, Color3.new(1,1), "Items_ESP")
@@ -476,6 +479,7 @@ Highlight(v, Color3.new(0,0,1), "Generator_ESP")
 end
 end
 GeneratorESP = workspace.Map.Ingame.DescendantAdded:Connect(function(v)
+wait(1)
 if v:IsA("Model") and v.Parent.Name == "Map" and v.Name == "Generator" and not v:FindFirstChild("Generator_ESP") then
 Text(v, v.Name, Color3.new(0,0,1), 14, "Generator_ESP")
 Highlight(v, Color3.new(0,0,1), "Generator_ESP")
@@ -498,6 +502,7 @@ Highlight(v, Color3.new(1,0,1), "SSTM_ESP")
 end
 end
 SubspaceTripmineESP = workspace.Map.Ingame.DescendantAdded:Connect(function(v)
+wait(1)
 if v:IsA("Model") and v.Name == "SubspaceTripmine" and not v:FindFirstChild("SubspaceTripmine_ESP") then
 Text(v, v.Name, Color3.new(1,0,1), 14, "SSTm_ESP")
 Highlight(v, Color3.new(1,0,1), "SSTM_ESP")
