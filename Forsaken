@@ -45,9 +45,587 @@ end
 end
 end
 --// Library \\
+local repo = 'https://raw.githubusercontent.com/mstudio45/LinoriaLib/main/'
+local Library = loadstring(game:HttpGet(repo .. 'Library.lua'))()
+local ThemeManager = loadstring(game:HttpGet(repo .. 'addons/ThemeManager.lua'))()
+local SaveManager = loadstring(game:HttpGet(repo .. 'addons/SaveManager.lua'))()
+
+local Options = Library.Options
+local Toggles = Library.Toggles
+
+Library.ShowToggleFrameInKeybinds = true
+Library.ShowCustomCursor = true
+Library.NotifySide = "Left"
+
+--// Create Window \\
+local Window = Library:CreateWindow({
+	Title = 'YOUHUB | Forsaken',
+	Center = true,
+	AutoShow = true,
+	Resizable = true,
+	ShowCustomCursor = true,
+	NotifySide = "Right",
+	TabPadding = 8,
+	MenuFadeTime = 0
+})
+--// Create Tab \\
+local Tabs = {
+	Main = Window:AddTab('Chính'),
+	Settings = Window:AddTab('Cài đặt')
+}
+--// Code \\
+
+local Generator = Tabs.Main:AddRightGroupbox('Máy phát điện')
 
 
+Generator:AddDropdown('FixMode', {
+	Values = {'Siêu nhanh (Premium)', 'Nguy hiểm', 'An toàn'},
+	Default = 3,
+	Multi = false,
+	Text = 'Chế độ sửa',
+	Searchable = false,
+        Callback = function(v)
+_G.FixMode = v or "An toàn"
+end})
+Generator:AddToggle("AutoGenerator",{
+Text = "Sửa máy phát điện",
+Default = false,
+Callback = function(v)
+_G.AutoGen = v
+pcall(function()
+task.spawn(function()
+while _G.AutoGen do
+if _G.FixMode == "Siêu nhanh (Premium)" and game:GetService("Players").LocalPlayer.PlayerGui:FindFirstChild("PuzzleUI") then
+wait(2)
+for _,v in ipairs(workspace["Map"]["Ingame"]["Map"]:GetChildren()) do
+if v.Name == "Generator" then
+v.Remotes.RE:FireServer()
+end
+end
+elseif _G.FixMode == "Nguy hiểm" and game:GetService("Players").LocalPlayer.PlayerGui:FindFirstChild("PuzzleUI") then
+wait(4)
+for _,v in ipairs(workspace["Map"]["Ingame"]["Map"]:GetChildren()) do
+if v.Name == "Generator" then
+v.Remotes.RE:FireServer()
+end
+end
+elseif _G.FixMode == "An toàn" and game:GetService("Players").LocalPlayer.PlayerGui:FindFirstChild("PuzzleUI") then
+wait(6)
+for _,v in ipairs(workspace["Map"]["Ingame"]["Map"]:GetChildren()) do
+if v.Name == "Generator" then
+v.Remotes.RE:FireServer()
+end
+end
+end
+wait()
+end
+end)
+end)
+end})
+Generator:AddToggle("AutoFarm",{
+Text = "Luôn tới máy phát điện",
+Default = false,
+Callback = function(v)
+_G.AutoFarm = v
+pcall(function()
+task.spawn(function()
+while _G.AutoFarm == true do
+for _,v in ipairs(workspace.Map.Ingame.Map:GetChildren()) do
+if v.Name == "Generator" and game.Players.LocalPlayer.Character:FindFirstChild("CollisionHitbox") then
+if v.Progress.Value < 100 and not game.Players.LocalPlayer.PlayerGui:FindFirstChild("PuzzleUI") then
+game.Players.LocalPlayer.Character.HumanoidRootPart.Position = v:FindFirstChild("Main").Position
+game.Players.LocalPlayer.Character:FindFirstChild("CollisionHitbox").Position = game.Players.LocalPlayer.Character.HumanoidRootPart.Position
+fireproximityprompt(v:FindFirstChild("Main").Prompt)
+end
+end
+end
+wait(1)
+end
+end)
+end)
+end})
+Generator:AddButton("Tới máy phát điện",function()
+_G.TTG = true
+task.spawn(function()
+while _G.TTG do
+for _,v in ipairs(workspace.Map.Ingame.Map:GetChildren()) do
+if v.Name == "Generator" and game.Players.LocalPlayer.Character:FindFirstChild("CollisionHitbox") then
+if v.Progress.Value < 100 and not game.Players.LocalPlayer.PlayerGui:FindFirstChild("PuzzleUI") then
+game.Players.LocalPlayer.Character.HumanoidRootPart.Position = v:FindFirstChild("Main").Position
+game.Players.LocalPlayer.Character:FindFirstChild("CollisionHitbox").Position = game.Players.LocalPlayer.Character.HumanoidRootPart.Position
+end
+end
+end
+wait()
+end
+end)
+wait(0.5)
+_G.TTG = false
+end)
+local Misc = Tabs.Main:AddLeftGroupbox('Tiên ích')
 
+Misc:AddSlider("HealthEatPizza",{
+Text = "Máu dùng pizza",
+Min = 1,
+Default = 50,
+Max = 50,
+Rounding = 1,
+Compact = true,
+Callback = function(v)
+_G.HealthEatPizza = v
+end})
+Misc:AddSlider("DistanceEatPizza",{
+Text = "Khoảng cách dùng pizza",
+Min = 10,
+Default = 10,
+Max = 50,
+Rounding = 1,
+Compact = true,
+Callback = function(v)
+_G.DistanceEatPizza = v
+end})
+
+_G.HealthEatPizza = 50
+_G.DistanceEatPizza = 10
+
+game:GetService("RunService").RenderStepped:Connect(function()
+if _G.AlwaysEatPizza and workspace.Map.Ingame:FindFirstChild("Pizza") then
+if game.Players.LocalPlayer.Character.Humanoid.Health < _G.HealthEatPizza and (workspace.Map:FindFirstChild("Ingame"):FindFirstChild("Pizza").Position - game.Players.LocalPlayer.Character.HumanoidRootPart.Position).Magnitude < _G.DistanceEatPizza then
+workspace.Map.Ingame:FindFirstChild("Pizza").Position = game.Players.LocalPlayer.Character.HumanoidRootPart.Position
+end
+end
+end)
+Misc:AddToggle("AlwaysEatPizza",{
+Text = "Luôn ăn pizza",
+Default = false,
+Callback = function(v)
+_G.AlwaysEatPizza = v
+end})
+Misc:AddDivider()
+Misc:AddToggle("AlwaysCoinFlip",{
+Text = "Luôn lật xu",
+Default = false,
+Callback = function(v)
+_G.AutoFlipCoins = v or false
+game:GetService("RunService").RenderStepped:Connect(function()
+if _G.AutoFlipCoins then
+game:GetService("ReplicatedStorage"):WaitForChild("Modules"):WaitForChild("Network"):WaitForChild("RemoteEvent"):FireServer("UseActorAbility", "CoinFlip")
+end
+end)
+end})
+game:GetService("RunService").RenderStepped:Connect(function()
+game.Players.LocalPlayer.PlayerGui.TemporaryUI.PlayerInfo.CurrentSurvivors.Visible = not _G.HideBar
+end)
+Misc:AddToggle("AlwaysHideBar",{
+Text = "Xoá hiện thị sống sót",
+Default = false,
+Callback = function(v)
+_G.HideBar = v or false
+end})
+
+local Players = Tabs.Main:AddRightGroupbox('Player')
+
+Players:AddDropdown('SpeedBoostValue', {
+	Values = {'1', '2', '3', '4', '5'},
+	Default = 2,
+	Multi = false,
+	Text = 'Tốc độ',
+	Searchable = false,
+        Callback = function(v)
+_G.SpeedBoostValue = v or '2'
+end})
+
+Players:AddToggle("SpeedBoost",{
+Text = "Nhận tốc độ",
+Default = false,
+Callback = function(v)
+_G.SpeedBoost = v
+while _G.SpeedBoost do
+if _G.SpeedBoostValue == '1' then
+game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame += game.Players.LocalPlayer.Character.Humanoid.MoveDirection * 0.1
+game.Players.LocalPlayer.Character.HumanoidRootPart.CanCollide = true
+elseif _G.SpeedBoostValue == '2' then
+game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame += game.Players.LocalPlayer.Character.Humanoid.MoveDirection * 0.2
+game.Players.LocalPlayer.Character.HumanoidRootPart.CanCollide = true
+elseif _G.SpeedBoostValue == '3' then
+game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame += game.Players.LocalPlayer.Character.Humanoid.MoveDirection * 0.3
+game.Players.LocalPlayer.Character.HumanoidRootPart.CanCollide = true
+elseif _G.SpeedBoostValue == '4' then
+game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame += game.Players.LocalPlayer.Character.Humanoid.MoveDirection * 0.4
+game.Players.LocalPlayer.Character.HumanoidRootPart.CanCollide = true
+elseif _G.SpeedBoostValue == '5' then
+game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame += game.Players.LocalPlayer.Character.Humanoid.MoveDirection * 0.5
+game.Players.LocalPlayer.Character.HumanoidRootPart.CanCollide = true
+end
+wait()
+end
+end})
+Players:AddDivider()
+StaminaScript = require(game:GetService("ReplicatedStorage").Systems.Character.Game.Sprinting)
+game:GetService("RunService").RenderStepped:Connect(function()
+StaminaScript.MaxStamina = _G.MaxStamina or 100
+StaminaScript.StaminaGain = _G.StaminaGain or 30
+StaminaScript.StaminaLoss = _G.StaminaLoss or 10
+StaminaScript.SprintSpeed = _G.SpeedSprint or 28
+end)
+Players:AddSlider("MaxStamina",{
+Text = "Sức bền tối đa",
+Min = 100,
+Default = 100,
+Max = 400,
+Rounding = 1,
+Compact = true,
+Callback = function(v)
+_G.MaxStamina = v
+end})
+Players:AddSlider("StaminaGain",{
+Text = "Sức bền thêm",
+Min = 30,
+Default = 30,
+Max = 50,
+Rounding = 1,
+Compact = true,
+Callback = function(v)
+_G.StaminaGain = v
+end})
+Players:AddSlider("StaminaLoss",{
+Text = "Sức bền mất",
+Min = 1,
+Default = 10,
+Max = 15,
+Rounding = 1,
+Compact = true,
+Callback = function(v)
+_G.StaminaLoss = v
+end})
+Players:AddSlider("StaminaSprint",{
+Text = "Tốc độ chạy",
+Min = 24,
+Default = 28,
+Max = 32,
+Rounding = 1,
+Compact = true,
+Callback = function(v)
+_G.SpeedSprint = v
+end})
+Players:AddDivider()
+Players:AddToggle("InfStamina",{
+Text = "Vô hạn sức bền",
+Default = false,
+Callback = function(v)
+_G.InfinityStamina = v
+InfStamina = game:GetService("RunService").RenderStepped:Connect(function()
+if not _G.InfinityStamina then
+InfStamina:Disconnect()
+StaminaScript.StaminaLossDisabled = nil
+return
+end
+StaminaScript.StaminaLossDisabled = function() 
+end
+end)
+end})
+Players:AddButton("Xoá hiệu ứng mù", function()
+game:GetService("ReplicatedStorage").Modules.StatusEffects.Blindness:Destroy()
+end)
+Players:AddButton("Xoá hiệu ứng chậm", function()
+game:GetService("ReplicatedStorage").Modules.StatusEffects.Slowness:Destroy()
+end)
+
+local Camera = Tabs.Main:AddLeftGroupbox('Máy Ảnh')
+
+Camera:AddSlider("FieldOfViewValue",{
+Text = "Góc sâu",
+Min = 80,
+Default = 80,
+Max = 120,
+Rounding = 1,
+Compact = true,
+Callback = function(v)
+_G.FieldOfViewValue = v
+end})
+Camera:AddToggle("FOV",{
+Text = "Nhận góc",
+Default = false,
+Callback = function(v)
+_G.FieldOfView = v
+game:GetService("RunService").RenderStepped:Connect(function()
+if _G.FieldOfView then
+workspace.Camera.FieldOfView = _G.FieldOfViewValue or 80
+end
+end)
+end})
+Camera:AddDivider()
+Camera:AddToggle("NoFog",{
+Text = "Xoá sương",
+Default = false,
+Callback = function(v)
+_G.NoFog = v
+game:GetService("RunService").RenderStepped:Connect(function()
+if not game.Lighting:GetAttribute("FogStart") then game.Lighting:SetAttribute("FogStart", game.Lighting.FogStart) end
+if not game.Lighting:GetAttribute("FogEnd") then game.Lighting:SetAttribute("FogEnd", game.Lighting.FogEnd) end
+game.Lighting.FogStart = _G.NoFog and 0 or game.Lighting:GetAttribute("FogStart")
+game.Lighting.FogEnd = _G.NoFog and math.huge or game.Lighting:GetAttribute("FogEnd")
+local fog = game.Lighting:FindFirstChildOfClass("Atmosphere")
+if fog then
+if not fog:GetAttribute("Density") then fog:SetAttribute("Density", fog.Density) end
+fog.Density = _G.NoFog and 0 or fog:GetAttribute("Density")
+end
+end)
+end})
+Camera:AddToggle("Fullbright",{
+Text = "Phủ sáng",
+Default = false,
+Callback = function(v)
+_G.Fullbright = v
+game:GetService("RunService").RenderStepped:Connect(function()
+if _G.Fullbright then
+game.Lighting.OutdoorAmbient = Color3.fromRGB(255,255,255)
+game.Lighting.Brightness = 1.5
+game.Lighting.GlobalShadows = false
+else
+game.Lighting.OutdoorAmbient = Color3.fromRGB(55,55,55)
+game.Lighting.Brightness = 1.5
+game.Lighting.GlobalShadows = true
+end
+end)
+end})
+
+local ESP = Tabs.Main:AddRightGroupbox('Định vị')
+
+ESP:AddToggle("KE",{
+Text = "Định vị xác nhân",
+Default = false,
+Callback = function(v)
+if v then
+for _, v in pairs(workspace.Players.Killers:GetChildren()) do
+if v:IsA("Model") and v.Parent.Name == "Killers" then
+Text(v.HumanoidRootPart, v.Name, Color3.new(1), 14, "Killer_ESP")
+Highlight(v, Color3.new(1), "Killer_ESP")
+end
+end
+KillerESP = workspace.Players.Killers.DescendantAdded:Connect(function(v)
+if v:IsA("Model") and v.Parent.Name == "Killers" then
+Text(v.HumanoidRootPart, v.Name, Color3.new(1), 14, "Killer_ESP")
+Highlight(v, Color3.new(1), "Killer_ESP")
+end
+end)
+else
+KillerESP:Disconnect()
+Disable("Killer_ESP")
+end
+end})
+ESP:AddToggle("SE",{
+Text = "Định vị người sống",
+Default = false,
+Callback = function(v)
+if v then
+for _, v in ipairs(workspace.Players.Survivors:GetChildren()) do
+if v:IsA("Model") and v.Parent.Name == "Survivors" then
+Text(v.HumanoidRootPart, v.Name, Color3.new(0,1), 14, "Survivor_ESP")
+Highlight(v, Color3.new(0,1), "Survivor_ESP")
+end
+end
+SurvivalESP = workspace.Players.Survivors.DescendantAdded:Connect(function(v)
+if v:IsA("Model") and v.Parent.Name == "Survivors" then
+Text(v.HumanoidRootPart, v.Name, Color3.new(0,1), 14, "Survivor_ESP")
+Highlight(v, Color3.new(0,1), "Survivor_ESP")
+end
+end)
+else
+SurvivalESP:Disconnect()
+LibESP:Delete("Survivor_ESP")
+end
+end})
+ESP:AddToggle("IE",{
+Text = "Định vị vật phẩm",
+Default = false,
+Callback = function(v)
+if v then
+for _, v in ipairs(workspace:GetDescendants()) do
+if v:IsA("Model") and v.Name == "BloxyCola" and not v:FindFirstChild("Items_ESP") then
+Text(v, v.Name, Color3.new(1,1), 14, "Items_ESP")
+Highlight(v, Color3.new(1,1), "Items_ESP")
+elseif v:IsA("Model") and v.Name == "Medkit" and not v:FindFirstChild("Items_ESP") then
+Text(v, v.Name, Color3.new(1), 14, "Items_ESP")
+Highlight(v, Color3.new(1), "Items_ESP")
+end
+end
+ItemsESP = workspace.Map.Ingame.DescendantAdded:Connect(function(v)
+if v:IsA("Model") and v.Name == "BloxyCola" and not v:FindFirstChild("Items_ESP") then
+Text(v, v.Name, Color3.new(1,1), 14, "Items_ESP")
+Highlight(v, Color3.new(1,1), "Items_ESP")
+elseif v:IsA("Model") and v.Name == "Medkit" and not v:FindFirstChild("Items_ESP") then
+Text(v, v.Name, Color3.new(1), 14, "Items_ESP")
+Highlight(v, Color3.new(1), "Items_ESP")
+end
+end)
+else
+ItemsESP:Disconnect()
+LibESP:Delete("Items_ESP")
+end
+end})
+ESP:AddToggle("GE",{
+Text = "Định vị máy phát điện",
+Default = false,
+Callback = function(v)
+if v then
+for _, v in ipairs(workspace:GetDescendants()) do
+if v:IsA("Model") and v.Parent.Name == "Map" and v.Name == "Generator" and not v:FindFirstChild("Generator_ESP") then
+Text(v, v.Name, Color3.new(0,0,1), 14, "Generator_ESP")
+Highlight(v, Color3.new(0,0,1), "Generator_ESP")
+end
+end
+GeneratorESP = workspace.Map.Ingame.DescendantAdded:Connect(function(v)
+if v:IsA("Model") and v.Parent.Name == "Map" and v.Name == "Generator" and not v:FindFirstChild("Generator_ESP") then
+Text(v, v.Name, Color3.new(0,0,1), 14, "Generator_ESP")
+Highlight(v, Color3.new(0,0,1), "Generator_ESP")
+end
+end)
+else
+GeneratorESP:Disconnect()
+LibESP:Delete("Generator_ESP")
+end
+end})
+ESP:AddToggle("SSTME",{
+Text = "Định vị bẫy không gian",
+Default = false,
+Callback = function(v)
+if v then
+for _, v in ipairs(workspace:GetDescendants()) do
+if v:IsA("Model") and v.Name == "SubspaceTripmine" and not v:FindFirstChild("SubspaceTripmine_ESP") then
+Text(v, v.Name, Color3.new(1,0,1), 14, "SSTM_ESP")
+Highlight(v, Color3.new(1,0,1), "SSTM_ESP")
+end
+end
+SubspaceTripmineESP = workspace.Map.Ingame.DescendantAdded:Connect(function(v)
+if v:IsA("Model") and v.Name == "SubspaceTripmine" and not v:FindFirstChild("SubspaceTripmine_ESP") then
+Text(v, v.Name, Color3.new(1,0,1), 14, "SSTm_ESP")
+Highlight(v, Color3.new(1,0,1), "SSTM_ESP")
+end
+end)
+else
+SubspaceTripmineESP:Disconnect()
+LibESP:Delete("SSTM_ESP")
+end
+end})
+
+local Interact = Tabs.Main:AddLeftGroupbox('Tương tác')
+
+Interact:AddToggle("Reach",{
+Text = "Tương tác xa",
+Default = false,
+Callback = function(v)
+if v then
+for _,v in pairs(workspace:GetDescendants()) do
+if v:IsA("ProximityPrompt") then
+v.MaxActivationDistance = 15
+end
+end
+IncreasedDistance = workspace.DescendantAdded:Connect(function(v)
+if v:IsA("ProximityPrompt") then
+v.MaxActivationDistance = 15
+end
+end)
+else
+IncreasedDistance:Disconnect()
+for _,v in pairs(workspace:GetDescendants()) do
+if v:IsA("ProximityPrompt") then
+v.MaxActivationDistance = 8
+end
+end
+end
+end})
+Interact:AddToggle("ThroughInteract",{
+Text = "Tương tác xuyên",
+Default = false,
+Callback = function(v)
+if v then
+for _,v in pairs(workspace:GetDescendants()) do
+if v:IsA("ProximityPrompt") then
+v.RequiresLineOfSight = false
+end
+end
+ThroughInteract = workspace.DescendantAdded:Connect(function(v)
+if v:IsA("ProximityPrompt") then
+v.RequiresLineOfSight = false
+end
+end)
+else
+ThroughInteract:Disconnect()
+for _,v in pairs(workspace:GetDescendants()) do
+if v:IsA("ProximityPrompt") then
+v.RequiresLineOfSight = true
+end
+end
+end
+end})
+Interact:AddToggle("InstanceInteract",{
+Text = "Tương tác nhanh chóng",
+Default = false,
+Callback = function(v)
+if v then
+for _,v in pairs(workspace:GetDescendants()) do
+if v:IsA("ProximityPrompt") then
+v.HoldDuration = 0
+end
+end
+InstanceInteract = workspace.DescendantAdded:Connect(function(v)
+if v:IsA("ProximityPrompt") then
+v.HoldDuration = 0
+end
+end)
+else
+InstanceInteract:Disconnect()
+end
+end})
+
+Library:SetWatermarkVisibility(true)
+
+local FrameTimer = tick()
+local FrameCounter = 0;
+local FPS = 60;
+
+local WatermarkConnection = game:GetService('RunService').RenderStepped:Connect(function()
+	FrameCounter += 1;
+
+	if (tick() - FrameTimer) >= 1 then
+		FPS = FrameCounter;
+		FrameTimer = tick();
+		FrameCounter = 0;
+	end;
+
+	Library:SetWatermark(('Forsaken | %s fps | %s ms'):format(
+		math.floor(FPS),
+		math.floor(game:GetService('Stats').Network.ServerStatsItem['Data Ping']:GetValue())
+	))
+end)
+
+local MenuGroup = Tabs.Settings:AddLeftGroupbox("Menu")
+local CreditsGroup = Tabs.Settings:AddRightGroupbox("Credits")
+
+MenuGroup:AddToggle("KeybindMenuOpen", { Default = false, Text = "Open Keybind Menu", Callback = function(v) Library.KeybindFrame.Visible = v end})
+MenuGroup:AddToggle("ShowCustomCursor", {Text = "Custom Cursor", Default = true, Callback = function(v) Library.ShowCustomCursor = v end})
+MenuGroup:AddDivider()
+MenuGroup:AddLabel("Keybind"):AddKeyPicker("MenuKeybind", { Default = "RightShift", NoUI = true, Text = "Menu keybind" })
+MenuGroup:AddButton("Unload", function() Library:Unload() end)
+
+CreditsGroup:AddLabel("Developers:")
+CreditsGroup:AddLabel("Owner | rechedmcvn")
+CreditsGroup:AddLabel("Reviewer:")
+CreditsGroup:AddLabel("Not Found.")
+
+ThemeManager:SetLibrary(Library)
+SaveManager:SetLibrary(Library)
+
+SaveManager:IgnoreThemeSettings()
+
+ThemeManager:SetFolder("MyScriptHub")
+SaveManager:SetFolder("MyScriptHub/specific-game")
+SaveManager:SetSubFolder("specific-place") 
+
+SaveManager:BuildConfigSection(Tabs.Settings)
+
+ThemeManager:ApplyToTab(Tabs.Settings)
 
 
 
