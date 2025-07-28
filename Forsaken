@@ -1,1 +1,58 @@
+--// Create Text \\
+local function Text(target, title, color, fontsize, name)
+local Billboard = Instance.new("BillboardGui", target)
+local TextLabel = Instance.new("TextLabel", Billboard)
+local UIStroke = Instance.new("UIStroke", Text)
+--// Billboard \\
+Billboard.AlwaysOnTop = true
+Billboard.Size = UDim2.new(0,400,0,100)
+Billboard.Name = name
+Billboard.Active = true
+--// TextLabel \\
+TextLabel.AnchorPoint = Vector2.new(0.5,0.5)
+TextLabel.BackgroundTransparency = 1
+TextLabel.BackgroundColor3 = Color3.new(0,0,0)
+TextLabel.TextColor3 = color
+TextLabel.Font = "RobotoMono"
+TextLabel.TextSize = fontsize
+TextLabel.TextTransparency = 0
+TextLabel.Visible = true
+TextLabel.Text = title
+TextLabel.Size = UDim2.new(1,0,0,0)
+TextLabel.Position = UDim2.new(0.5,0,0.7,-35)
+--// UIStroke \\
+UIStroke.Thickness = 1.5
+UIStroke.Color = Color3.new()
+UIStroke.Transparency = 0
+end
+--// Create Highlight \\
+local function Highlight(target, color, name)
+local Highlight = Instance.new('Highlight', target)
+--// Highlight \\
+Highlight.DepthMode = Enum.HighlightDepthMode.AlwaysOnTop
+Highlight.FillColor = color
+Highlight.OutlineColor = color
+Highlight.FillTransparency = 1
+Highlight.OutlineTransparency =  0
+Highlight.Name = name
+end
+--// Disable Text & Highlight \\
+local function Disable(name)
+for _,v in ipairs(workspace:GetDescendants()) do
+if v.Name == name then
+v:Destroy()
+end
+end
+end
+--// Library \\
+
+
+
+
+
+
+
+
+
+
 
