@@ -222,6 +222,33 @@ Default = false,
 Callback = function(v)
 _G.HideBar = v or false
 end})
+Misc:AddDivider()
+Misc:AddSlider("SizeHeart",{
+Text = "Kích thước tâm",
+Min = 10,
+Default = 10,
+Max = 50,
+Rounding = 1,
+Compact = true,
+Callback = function(v)
+_G.SizeHeart = v or 10
+end})
+Misc:AddToggle("EnabledHeart",{
+Text = "Nhận kích thước cho tâm",
+Default = false,
+Callback = function(v)
+_G.Heart = v or false
+game:GetService("RunService").RenderStepped:Connect(function()
+if _G.Heart then
+game:GetService("Players").LocalPlayer.PlayerGui.MainUI.MobileUI.Crosshair.Size = UDim2.new(0.05,_G.SizeHeart,0.05,_G.SizeHeart)
+else
+game:GetService("Players").LocalPlayer.PlayerGui.MainUI.MobileUI.Crosshair.Size = UDim2.new(0.05,0,0.05,0)
+end
+end)
+end})
+
+
+
 
 local Players = Tabs.Main:AddRightGroupbox('Player')
 
@@ -479,7 +506,6 @@ Highlight(v, Color3.new(0,0,1), "Generator_ESP")
 end
 end
 GeneratorESP = workspace.Map.Ingame.DescendantAdded:Connect(function(v)
-wait(1)
 if v:IsA("Model") and v.Parent.Name == "Map" and v.Name == "Generator" and not v:FindFirstChild("Generator_ESP") then
 Text(v, v.Name, Color3.new(0,0,1), 14, "Generator_ESP")
 Highlight(v, Color3.new(0,0,1), "Generator_ESP")
