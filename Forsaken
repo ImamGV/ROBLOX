@@ -214,7 +214,7 @@ end
 end)
 end})
 game:GetService("RunService").RenderStepped:Connect(function()
-game.Players.LocalPlayer.PlayerGui.TemporaryUI.PlayerInfo.CurrentSurvivors.Visible = not _G.HideBar
+game.Players.LocalPlayer.PlayerGui:FindFirstChild("TemporaryUI").PlayerInfo.CurrentSurvivors.Visible = not _G.HideBar
 end)
 Misc:AddToggle("AlwaysHideBar",{
 Text = "Xoá hiện thị sống sót",
@@ -256,14 +256,14 @@ Players:AddDropdown('SpeedBoostValue', {
 	Values = {'1', '2', '3', '4', '5'},
 	Default = 2,
 	Multi = false,
-	Text = 'Tốc độ',
+	Text = 'Gia tốc',
 	Searchable = false,
         Callback = function(v)
 _G.SpeedBoostValue = v or '2'
 end})
 
 Players:AddToggle("SpeedBoost",{
-Text = "Nhận tốc độ",
+Text = "Nhận gia tốc",
 Default = false,
 Callback = function(v)
 _G.SpeedBoost = v
@@ -290,11 +290,16 @@ end})
 Players:AddDivider()
 StaminaScript = require(game:GetService("ReplicatedStorage").Systems.Character.Game.Sprinting)
 game:GetService("RunService").RenderStepped:Connect(function()
-StaminaScript.MaxStamina = _G.MaxStamina or 100
-StaminaScript.StaminaGain = _G.StaminaGain or 30
-StaminaScript.StaminaLoss = _G.StaminaLoss or 10
-StaminaScript.SprintSpeed = _G.SpeedSprint or 28
+for _,v in pairs(workspace.Players.Survivors:GetChildren()) do
+if v.Parent.Name == "Survivors" and v:GetAttribute("Username") == game.Players.LocalPlayer.Name then
+StaminaScript.MaxStamina = _G.MaxStaminaS or 100
+StaminaScript.StaminaGain = _G.StaminaGainS or 30
+StaminaScript.StaminaLoss = _G.StaminaLossS or 10
+StaminaScript.SprintSpeed = _G.SpeedSprintS or 24
+end
+end
 end)
+Players:AddLabel("Dành cho người sống sót")
 Players:AddSlider("MaxStamina",{
 Text = "Sức bền tối đa",
 Min = 100,
@@ -303,7 +308,7 @@ Max = 400,
 Rounding = 1,
 Compact = true,
 Callback = function(v)
-_G.MaxStamina = v
+_G.MaxStaminaS = v
 end})
 Players:AddSlider("StaminaGain",{
 Text = "Sức bền thêm",
@@ -313,7 +318,7 @@ Max = 50,
 Rounding = 1,
 Compact = true,
 Callback = function(v)
-_G.StaminaGain = v
+_G.StaminaGainS = v
 end})
 Players:AddSlider("StaminaLoss",{
 Text = "Sức bền mất",
@@ -323,7 +328,7 @@ Max = 15,
 Rounding = 1,
 Compact = true,
 Callback = function(v)
-_G.StaminaLoss = v
+_G.StaminaLossS = v
 end})
 Players:AddSlider("StaminaSprint",{
 Text = "Tốc độ chạy",
@@ -333,7 +338,59 @@ Max = 32,
 Rounding = 1,
 Compact = true,
 Callback = function(v)
-_G.SpeedSprint = v
+_G.SpeedSprintS = v
+end})
+Players:AddDivider()
+game:GetService("RunService").RenderStepped:Connect(function()
+for _,v in pairs(workspace.Players.Killers:GetChildren()) do
+if v.Parent.Name == "Killers" and v:GetAttribute("Username") == game.Players.LocalPlayer.Name then
+StaminaScript.MaxStamina = _G.MaxStaminaK or 110
+StaminaScript.StaminaGain = _G.StaminaGainK or 30
+StaminaScript.StaminaLoss = _G.StaminaLossK or 10
+StaminaScript.SprintSpeed = _G.SpeedSprintK or 28
+end
+end
+end)
+Players:AddLabel("Dành cho người sát nhân")
+Players:AddSlider("MaxStamina",{
+Text = "Sức bền tối đa",
+Min = 110,
+Default = 110,
+Max = 400,
+Rounding = 1,
+Compact = true,
+Callback = function(v)
+_G.MaxStaminaK = v
+end})
+Players:AddSlider("StaminaGain",{
+Text = "Sức bền thêm",
+Min = 30,
+Default = 30,
+Max = 50,
+Rounding = 1,
+Compact = true,
+Callback = function(v)
+_G.StaminaGainK = v
+end})
+Players:AddSlider("StaminaLoss",{
+Text = "Sức bền mất",
+Min = 1,
+Default = 10,
+Max = 15,
+Rounding = 1,
+Compact = true,
+Callback = function(v)
+_G.StaminaLossK = v
+end})
+Players:AddSlider("StaminaSprint",{
+Text = "Tốc độ chạy",
+Min = 28,
+Default = 28,
+Max = 32,
+Rounding = 1,
+Compact = true,
+Callback = function(v)
+_G.SpeedSprintK = v
 end})
 Players:AddDivider()
 Players:AddToggle("InfStamina",{
