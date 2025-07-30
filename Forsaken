@@ -533,30 +533,6 @@ KillerESP:Disconnect()
 Disable("Killer_ESP")
 end
 end})
-ESP:AddToggle("KE",{
-Text = "Hiện trang phục sát nhân",
-Default = false,
-Callback = function(v)
-if v then
-for _, v in pairs(workspace.Players.Killers:GetChildren()) do
-if v:IsA("Model") and v.Parent.Name == "Killers" then
-Text(v.HumanoidRootPart, "\nSkin : " .. v:GetAttribute("SkinNameDisplay"), Color3.new(1), 14, "ShowKiller_ESP")
-Highlight(v, Color3.new(1), "ShowKiller_ESP")
-end
-end
-KillerESP = workspace.Players.DescendantAdded:Connect(function(v)
-wait(2)
-if v:IsA("Model") and v.Parent.Name == "Killers" then
-Text(v.HumanoidRootPart, "\nSkin : " .. v:GetAttribute("SkinNameDisplay"), Color3.new(1), 14, "ShowKiller_ESP")
-Highlight(v, Color3.new(1), "ShowKiller_ESP")
-end
-end)
-else
-KillerESP:Disconnect()
-Disable("ShowKiller_ESP")
-end
-end})
-ESP:AddDivider()
 ESP:AddToggle("SE",{
 Text = "Định vị người sống",
 Default = false,
@@ -580,30 +556,6 @@ SurvivalESP:Disconnect()
 Disable("Survivor_ESP")
 end
 end})
-ESP:AddToggle("SE",{
-Text = "Định vị người sống",
-Default = false,
-Callback = function(v)
-if v then
-for _, v in ipairs(workspace.Players.Survivors:GetChildren()) do
-if v:IsA("Model") and v.Parent.Name == "Survivors" then
-Text(v.HumanoidRootPart, "\nSkin : " .. v:GetAttribute("SkinNameDisplay"), Color3.new(0,1), 14, "ShowSurvivor_ESP")
-Highlight(v, Color3.new(0,1), "ShowSurvivor_ESP")
-end
-end
-SurvivalESP = workspace.Players.DescendantAdded:Connect(function(v)
-wait(2)
-if v:IsA("Model") and v.Parent.Name == "Survivors" then
-Text(v.HumanoidRootPart, "\nSkin : " .. v:GetAttribute("SkinNameDisplay"), Color3.new(0,1), 14, "ShowSurvivor_ESP")
-Highlight(v, Color3.new(0,1), "ShowSurvivor_ESP")
-end
-end)
-else
-SurvivalESP:Disconnect()
-Disable("ShowSurvivor_ESP")
-end
-end})
-ESP:AddDivider()
 ESP:AddToggle("IE",{
 Text = "Định vị vật phẩm",
 Default = false,
