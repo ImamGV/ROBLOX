@@ -245,6 +245,40 @@ else
 game:GetService("Players").LocalPlayer.PlayerGui.MainUI.MobileUI.Crosshair.Size = UDim2.new(0.05,0,0.05,0)
 end
 end)
+Misc:AddDivider()
+Misc:AddSlider("HitboxTransparency",{
+Text = "Độ trong suốt Hitbox",
+Min = 0.1,
+Default = 0.1,
+Max = 0.9,
+Rounding = 1,
+Compact = true,
+Callback = function(v)
+_G.HitboxTransparency = v or 0.1
+end})
+Misc:AddToggle("EnabledHitbox",{
+Text = "Nhận trong suốt Hitbox",
+Default = false,
+Callback = function(v)
+if v then
+for _,v in pairs(workspace.Hitboxes:GetChildren()) do
+if v.Parent.Name == "Hitboxes" then
+v.Transparency = _G.HitboxTransparency or 0.1
+end
+end
+HitboxTran = workspace.Hitboxes.DescendantAdded:Connect(function(v)
+if v.Parent.Name == "Hitboxes" then
+v.Transparency = _G.HitboxTransparency or 0.1
+end
+end)
+else
+HitboxTran:Disconnect()
+for _,v in pairs(workspace.Hitboxes:GetChildren()) do
+if v.Parent.Name == "Hitboxes" then
+v.Transparency = 0
+end
+end
+end
 end})
 
 
@@ -477,7 +511,7 @@ end})
 local ESP = Tabs.Main:AddLeftGroupbox('Định vị')
 
 ESP:AddToggle("KE",{
-Text = "Định vị xác nhân",
+Text = "Định vị sát nhân",
 Default = false,
 Callback = function(v)
 if v then
@@ -499,6 +533,30 @@ KillerESP:Disconnect()
 Disable("Killer_ESP")
 end
 end})
+ESP:AddToggle("KE",{
+Text = "Hiện trang phục sát nhân",
+Default = false,
+Callback = function(v)
+if v then
+for _, v in pairs(workspace.Players.Killers:GetChildren()) do
+if v:IsA("Model") and v.Parent.Name == "Killers" then
+Text(v.HumanoidRootPart, "\nSkin : " .. v:GetAttribute("SkinNameDisplay"), Color3.new(1), 14, "ShowKiller_ESP")
+Highlight(v, Color3.new(1), "ShowKiller_ESP")
+end
+end
+KillerESP = workspace.Players.DescendantAdded:Connect(function(v)
+wait(2)
+if v:IsA("Model") and v.Parent.Name == "Killers" then
+Text(v.HumanoidRootPart, "\nSkin : " .. v:GetAttribute("SkinNameDisplay"), Color3.new(1), 14, "ShowKiller_ESP")
+Highlight(v, Color3.new(1), "ShowKiller_ESP")
+end
+end)
+else
+KillerESP:Disconnect()
+Disable("ShowKiller_ESP")
+end
+end})
+ESP:AddDivider()
 ESP:AddToggle("SE",{
 Text = "Định vị người sống",
 Default = false,
@@ -519,9 +577,33 @@ end
 end)
 else
 SurvivalESP:Disconnect()
-LibESP:Delete("Survivor_ESP")
+Disable("Survivor_ESP")
 end
 end})
+ESP:AddToggle("SE",{
+Text = "Định vị người sống",
+Default = false,
+Callback = function(v)
+if v then
+for _, v in ipairs(workspace.Players.Survivors:GetChildren()) do
+if v:IsA("Model") and v.Parent.Name == "Survivors" then
+Text(v.HumanoidRootPart, "\nSkin : " .. v:GetAttribute("SkinNameDisplay"), Color3.new(0,1), 14, "ShowSurvivor_ESP")
+Highlight(v, Color3.new(0,1), "ShowSurvivor_ESP")
+end
+end
+SurvivalESP = workspace.Players.DescendantAdded:Connect(function(v)
+wait(2)
+if v:IsA("Model") and v.Parent.Name == "Survivors" then
+Text(v.HumanoidRootPart, "\nSkin : " .. v:GetAttribute("SkinNameDisplay"), Color3.new(0,1), 14, "ShowSurvivor_ESP")
+Highlight(v, Color3.new(0,1), "ShowSurvivor_ESP")
+end
+end)
+else
+SurvivalESP:Disconnect()
+Disable("ShowSurvivor_ESP")
+end
+end})
+ESP:AddDivider()
 ESP:AddToggle("IE",{
 Text = "Định vị vật phẩm",
 Default = false,
@@ -548,7 +630,7 @@ end
 end)
 else
 ItemsESP:Disconnect()
-LibESP:Delete("Items_ESP")
+Disable("Items_ESP")
 end
 end})
 ESP:AddToggle("GE",{
@@ -570,7 +652,7 @@ end
 end)
 else
 GeneratorESP:Disconnect()
-LibESP:Delete("Generator_ESP")
+Disable("Generator_ESP")
 end
 end})
 ESP:AddToggle("SSTME",{
@@ -593,7 +675,7 @@ end
 end)
 else
 SubspaceTripmineESP:Disconnect()
-LibESP:Delete("SSTM_ESP")
+Disable("SSTM_ESP")
 end
 end})
 
