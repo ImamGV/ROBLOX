@@ -70,46 +70,46 @@ local Window = Library:CreateWindow({
 })
 --// Create Tab \\
 local Tabs = {
-	Main = Window:AddTab('Chính'),
-	Settings = Window:AddTab('Cài đặt')
+	Main = Window:AddTab('Main'),
+	Settings = Window:AddTab('Setting')
 }
 --// Code \\
 
-local Generator = Tabs.Main:AddRightGroupbox('Máy phát điện')
+local Generator = Tabs.Main:AddRightGroupbox('Generator')
 
 
 Generator:AddDropdown('FixMode', {
-	Values = {'Siêu nhanh (Premium)', 'Nguy hiểm', 'An toàn'},
+	Values = {'Fast', 'Normal', 'Slow'},
 	Default = 3,
 	Multi = false,
-	Text = 'Chế độ sửa',
+	Text = 'Delay',
 	Searchable = false,
         Callback = function(v)
-_G.FixMode = v or "An toàn"
+_G.FixMode = v or "Normal"
 end})
 Generator:AddToggle("AutoGenerator",{
-Text = "Sửa máy phát điện",
+Text = "Always fix generator",
 Default = false,
 Callback = function(v)
 _G.AutoGen = v
 pcall(function()
 task.spawn(function()
 while _G.AutoGen do
-if _G.FixMode == "Siêu nhanh (Premium)" and game:GetService("Players").LocalPlayer.PlayerGui:FindFirstChild("PuzzleUI") then
+if _G.FixMode == "Fast" and game:GetService("Players").LocalPlayer.PlayerGui:FindFirstChild("PuzzleUI") then
 wait(2)
 for _,v in ipairs(workspace["Map"]["Ingame"]["Map"]:GetChildren()) do
 if v.Name == "Generator" then
 v.Remotes.RE:FireServer()
 end
 end
-elseif _G.FixMode == "Nguy hiểm" and game:GetService("Players").LocalPlayer.PlayerGui:FindFirstChild("PuzzleUI") then
+elseif _G.FixMode == "Normal" and game:GetService("Players").LocalPlayer.PlayerGui:FindFirstChild("PuzzleUI") then
 wait(4)
 for _,v in ipairs(workspace["Map"]["Ingame"]["Map"]:GetChildren()) do
 if v.Name == "Generator" then
 v.Remotes.RE:FireServer()
 end
 end
-elseif _G.FixMode == "An toàn" and game:GetService("Players").LocalPlayer.PlayerGui:FindFirstChild("PuzzleUI") then
+elseif _G.FixMode == "Slow" and game:GetService("Players").LocalPlayer.PlayerGui:FindFirstChild("PuzzleUI") then
 wait(6)
 for _,v in ipairs(workspace["Map"]["Ingame"]["Map"]:GetChildren()) do
 if v.Name == "Generator" then
@@ -123,7 +123,7 @@ end)
 end)
 end})
 Generator:AddToggle("AutoFarm",{
-Text = "Luôn tới máy phát điện",
+Text = "Framing from generator",
 Default = false,
 Callback = function(v)
 _G.AutoFarm = v
@@ -144,7 +144,7 @@ end
 end)
 end)
 end})
-Generator:AddButton("Tới máy phát điện",function()
+Generator:AddButton("Teleport to generator",function()
 _G.TTG = true
 task.spawn(function()
 while _G.TTG do
@@ -162,10 +162,10 @@ end)
 wait(0.5)
 _G.TTG = false
 end)
-local Misc = Tabs.Main:AddLeftGroupbox('Tiên ích')
+local Misc = Tabs.Main:AddLeftGroupbox('Miscellaneous')
 
 Misc:AddSlider("HealthEatPizza",{
-Text = "Máu dùng pizza",
+Text = "Health",
 Min = 1,
 Default = 50,
 Max = 50,
@@ -175,7 +175,7 @@ Callback = function(v)
 _G.HealthEatPizza = v
 end})
 Misc:AddSlider("DistanceEatPizza",{
-Text = "Khoảng cách dùng pizza",
+Text = "Distance",
 Min = 10,
 Default = 10,
 Max = 50,
@@ -196,14 +196,14 @@ end
 end
 end)
 Misc:AddToggle("AlwaysEatPizza",{
-Text = "Luôn ăn pizza",
+Text = "Always eat pizza",
 Default = false,
 Callback = function(v)
 _G.AlwaysEatPizza = v
 end})
 Misc:AddDivider()
 Misc:AddToggle("AlwaysCoinFlip",{
-Text = "Luôn lật xu",
+Text = "Auto Flip Coin",
 Default = false,
 Callback = function(v)
 _G.AutoFlipCoins = v or false
@@ -217,14 +217,14 @@ game:GetService("RunService").RenderStepped:Connect(function()
 game.Players.LocalPlayer.PlayerGui:FindFirstChild("TemporaryUI").PlayerInfo.CurrentSurvivors.Visible = not _G.HideBar
 end)
 Misc:AddToggle("AlwaysHideBar",{
-Text = "Xoá hiện thị sống sót",
+Text = "Hide Survivors Bar",
 Default = false,
 Callback = function(v)
 _G.HideBar = v or false
 end})
 Misc:AddDivider()
 Misc:AddSlider("SizeHeart",{
-Text = "Kích thước tâm",
+Text = "Size shiftlock",
 Min = 10,
 Default = 10,
 Max = 50,
@@ -234,7 +234,7 @@ Callback = function(v)
 _G.SizeHeart = v or 10
 end})
 Misc:AddToggle("EnabledHeart",{
-Text = "Nhận kích thước cho tâm",
+Text = "Enabled",
 Default = false,
 Callback = function(v)
 _G.Heart = v or false
@@ -248,7 +248,7 @@ end)
 end})
 Misc:AddDivider()
 Misc:AddSlider("HitboxTransparency",{
-Text = "Độ trong suốt Hitbox",
+Text = "Transparency",
 Min = 0.1,
 Default = 0.1,
 Max = 0.9,
@@ -258,7 +258,7 @@ Callback = function(v)
 _G.HitboxTransparency = v or 0.1
 end})
 Misc:AddToggle("EnabledHitbox",{
-Text = "Nhận trong suốt Hitbox",
+Text = "Hitbox Transparency",
 Default = false,
 Callback = function(v)
 if v then
@@ -291,14 +291,14 @@ Players:AddDropdown('SpeedBoostValue', {
 	Values = {'1', '2', '3', '4', '5'},
 	Default = 2,
 	Multi = false,
-	Text = 'Gia tốc',
+	Text = 'Tpwalk',
 	Searchable = false,
         Callback = function(v)
 _G.SpeedBoostValue = v or '2'
 end})
 
 Players:AddToggle("SpeedBoost",{
-Text = "Nhận gia tốc",
+Text = "Enabled tpwalk",
 Default = false,
 Callback = function(v)
 _G.SpeedBoost = v
@@ -334,9 +334,9 @@ StaminaScript.SprintSpeed = _G.SpeedSprintS or 24
 end
 end
 end)
-Players:AddLabel("Dành cho người sống sót")
+Players:AddLabel("Exclusively for your survivor")
 Players:AddSlider("MaxStamina",{
-Text = "Sức bền tối đa",
+Text = "Max Stamina",
 Min = 100,
 Default = 100,
 Max = 400,
@@ -346,7 +346,7 @@ Callback = function(v)
 _G.MaxStaminaS = v
 end})
 Players:AddSlider("StaminaGain",{
-Text = "Sức bền thêm",
+Text = "Stamina Gain",
 Min = 30,
 Default = 30,
 Max = 50,
@@ -356,7 +356,7 @@ Callback = function(v)
 _G.StaminaGainS = v
 end})
 Players:AddSlider("StaminaLoss",{
-Text = "Sức bền mất",
+Text = "Stamina Loss",
 Min = 1,
 Default = 10,
 Max = 15,
@@ -366,7 +366,7 @@ Callback = function(v)
 _G.StaminaLossS = v
 end})
 Players:AddSlider("StaminaSprint",{
-Text = "Tốc độ chạy",
+Text = "Sprint Speed",
 Min = 24,
 Default = 28,
 Max = 32,
@@ -386,9 +386,9 @@ StaminaScript.SprintSpeed = _G.SpeedSprintK or 28
 end
 end
 end)
-Players:AddLabel("Dành cho người sát nhân")
+Players:AddLabel("Exclusively for your killer")
 Players:AddSlider("MaxStamina",{
-Text = "Sức bền tối đa",
+Text = "Max Stamina",
 Min = 110,
 Default = 110,
 Max = 400,
@@ -398,7 +398,7 @@ Callback = function(v)
 _G.MaxStaminaK = v
 end})
 Players:AddSlider("StaminaGain",{
-Text = "Sức bền thêm",
+Text = "Stamina Gain",
 Min = 30,
 Default = 30,
 Max = 50,
@@ -408,7 +408,7 @@ Callback = function(v)
 _G.StaminaGainK = v
 end})
 Players:AddSlider("StaminaLoss",{
-Text = "Sức bền mất",
+Text = "Stamina Loss",
 Min = 1,
 Default = 10,
 Max = 15,
@@ -418,7 +418,7 @@ Callback = function(v)
 _G.StaminaLossK = v
 end})
 Players:AddSlider("StaminaSprint",{
-Text = "Tốc độ chạy",
+Text = "Sprint Speed",
 Min = 28,
 Default = 28,
 Max = 32,
@@ -429,7 +429,7 @@ _G.SpeedSprintK = v
 end})
 Players:AddDivider()
 Players:AddToggle("InfStamina",{
-Text = "Vô hạn sức bền",
+Text = "No Loss Stamina",
 Default = false,
 Callback = function(v)
 _G.InfinityStamina = v
@@ -443,17 +443,40 @@ StaminaScript.StaminaLossDisabled = function()
 end
 end)
 end})
-Players:AddButton("Xoá hiệu ứng mù", function()
+game:GetService("RunService").RenderStepped:Connect(function()
+if _G.Invisible and game.Players.LocalPlayer.Character.Parent ~= workspace.Players.Spectating then
+local Animation = Instance.new("Animation")
+Animation.Name = "Invisible_Animation"
+Animation.AnimationId = "rbxassetid://75804462760596"
+local Load = game.Players.LocalPlayer.Character.Humanoid:LoadAnimation(Animation)
+Load:Play(0,1,1)
+Load:AdjustSpeed(0)
+else
+for i,v in next, game.Players.LocalPlayer.Character.Humanoid:GetPlayingAnimationTracks() do
+if v.Animation.Name == "Invisible_Animation" then
+v:Stop()
+end
+end
+end
+end)
+Players:AddToggle("Invisible",{
+Text = "Invisible",
+Default = false,
+Callback = function(v)
+_G.Invisible = v
+end})
+
+Players:AddButton("No Blindness", function()
 game:GetService("ReplicatedStorage").Modules.StatusEffects.Blindness:Destroy()
 end)
-Players:AddButton("Xoá hiệu ứng chậm", function()
+Players:AddButton("No Slowspeed", function()
 game:GetService("ReplicatedStorage").Modules.StatusEffects.Slowness:Destroy()
 end)
 
-local Camera = Tabs.Main:AddLeftGroupbox('Máy Ảnh')
+local Camera = Tabs.Main:AddLeftGroupbox('Camera Offical')
 
 Camera:AddSlider("FieldOfViewValue",{
-Text = "Góc sâu",
+Text = "Field Of View",
 Min = 80,
 Default = 80,
 Max = 120,
@@ -463,7 +486,7 @@ Callback = function(v)
 _G.FieldOfViewValue = v
 end})
 Camera:AddToggle("FOV",{
-Text = "Nhận góc",
+Text = "Enabled",
 Default = false,
 Callback = function(v)
 _G.FieldOfView = v
@@ -475,7 +498,7 @@ end)
 end})
 Camera:AddDivider()
 Camera:AddToggle("NoFog",{
-Text = "Xoá sương",
+Text = "Removal Fog",
 Default = false,
 Callback = function(v)
 _G.NoFog = v
@@ -492,7 +515,7 @@ end
 end)
 end})
 Camera:AddToggle("Fullbright",{
-Text = "Phủ sáng",
+Text = "Always Light Corver",
 Default = false,
 Callback = function(v)
 _G.Fullbright = v
@@ -509,23 +532,23 @@ end
 end)
 end})
 
-local ESP = Tabs.Main:AddLeftGroupbox('Định vị')
+local ESP = Tabs.Main:AddLeftGroupbox('ESP')
 
 ESP:AddToggle("KE",{
-Text = "Định vị sát nhân",
+Text = "Killers ESP",
 Default = false,
 Callback = function(v)
 if v then
 for _, v in pairs(workspace.Players.Killers:GetChildren()) do
 if v:IsA("Model") and v.Parent.Name == "Killers" then
-Text(v.HumanoidRootPart, v.Name, Color3.new(1), 14, "Killer_ESP")
+Text(v.HumanoidRootPart, v.Name .. "\n\nSkin : " .. v:GetAttribute("SkinNameDisplay"), Color3.new(1), 14, "Killer_ESP")
 Highlight(v, Color3.new(1), "Killer_ESP")
 end
 end
 KillerESP = workspace.Players.DescendantAdded:Connect(function(v)
 wait(2)
 if v:IsA("Model") and v.Parent.Name == "Killers" then
-Text(v.HumanoidRootPart, v.Name, Color3.new(1), 14, "Killer_ESP")
+Text(v.HumanoidRootPart, v.Name .. "\n\nSkin : " .. v:GetAttribute("SkinNameDisplay"), Color3.new(1), 14, "Killer_ESP")
 Highlight(v, Color3.new(1), "Killer_ESP")
 end
 end)
@@ -534,31 +557,8 @@ KillerESP:Disconnect()
 Disable("Killer_ESP")
 end
 end})
-ESP:AddToggle("KE",{
-Text = "Hiện trang phục sát nhân",
-Default = false,
-Callback = function(v)
-if v then
-for _, v in pairs(workspace.Players.Killers:GetChildren()) do
-if v:IsA("Model") and v.Parent.Name == "Killers" then
-Text(v.HumanoidRootPart, "\nSkin : " .. v:GetAttribute("SkinNameDisplay"), Color3.new(1), 14, "ShowKiller_ESP")
-Highlight(v, Color3.new(1), "ShowKiller_ESP")
-end
-end
-ShowKillerESP = workspace.Players.DescendantAdded:Connect(function(v)
-wait(2)
-if v:IsA("Model") and v.Parent.Name == "Killers" then
-Text(v.HumanoidRootPart, "\nSkin : " .. v:GetAttribute("SkinNameDisplay"), Color3.new(1), 14, "ShowKiller_ESP")
-Highlight(v, Color3.new(1), "ShowKiller_ESP")
-end
-end)
-else
-ShowKillerESP:Disconnect()
-Disable("ShowKiller_ESP")
-end
-end})
 ESP:AddToggle("SE",{
-Text = "Định vị người sống",
+Text = "Survivor ESP",
 Default = false,
 Callback = function(v)
 if v then
@@ -580,32 +580,8 @@ SurvivalESP:Disconnect()
 Disable("Survivor_ESP")
 end
 end})
-ESP:AddToggle("SSE",{
-Text = "Hiên trang phục người sống sót",
-Default = false,
-Callback = function(v)
-if v then
-for _, v in ipairs(workspace.Players.Survivors:GetChildren()) do
-if v:IsA("Model") and v.Parent.Name == "Survivors" then
-Text(v.HumanoidRootPart, "\nSkin : " .. v:GetAttribute("SkinNameDisplay"), Color3.new(0,1), 14, "ShowSurvivor_ESP")
-Highlight(v, Color3.new(0,1), "ShowSurvivor_ESP")
-end
-end
-ShowSurvivalESP = workspace.Players.DescendantAdded:Connect(function(v)
-wait(2)
-if v:IsA("Model") and v.Parent.Name == "Survivors" then
-Text(v.HumanoidRootPart, "\nSkin : " .. v:GetAttribute("SkinNameDisplay"), Color3.new(0,1), 14, "ShowSurvivor_ESP")
-Highlight(v, Color3.new(0,1), "ShowSurvivor_ESP")
-end
-end)
-else
-ShowSurvivalESP:Disconnect()
-Disable("ShowSurvivor_ESP")
-end
-end})
-ESP:AddDivider()
 ESP:AddToggle("IE",{
-Text = "Định vị vật phẩm",
+Text = "Support Items ESP",
 Default = false,
 Callback = function(v)
 if v then
@@ -633,7 +609,7 @@ Disable("Items_ESP")
 end
 end})
 ESP:AddToggle("GE",{
-Text = "Định vị máy phát điện",
+Text = "Generator ESP",
 Default = false,
 Callback = function(v)
 if v then
@@ -655,7 +631,7 @@ Disable("Generator_ESP")
 end
 end})
 ESP:AddToggle("SSTME",{
-Text = "Định vị bẫy không gian",
+Text = "Subspace Tripmine ESP",
 Default = false,
 Callback = function(v)
 if v then
@@ -678,75 +654,7 @@ Disable("SSTM_ESP")
 end
 end})
 
-local Interact = Tabs.Main:AddLeftGroupbox('Tương tác')
 
-Interact:AddToggle("Reach",{
-Text = "Tương tác xa",
-Default = false,
-Callback = function(v)
-if v then
-for _,v in pairs(workspace:GetDescendants()) do
-if v:IsA("ProximityPrompt") then
-v.MaxActivationDistance = 15
-end
-end
-IncreasedDistance = workspace.DescendantAdded:Connect(function(v)
-if v:IsA("ProximityPrompt") then
-v.MaxActivationDistance = 15
-end
-end)
-else
-IncreasedDistance:Disconnect()
-for _,v in pairs(workspace:GetDescendants()) do
-if v:IsA("ProximityPrompt") then
-v.MaxActivationDistance = 8
-end
-end
-end
-end})
-Interact:AddToggle("ThroughInteract",{
-Text = "Tương tác xuyên",
-Default = false,
-Callback = function(v)
-if v then
-for _,v in pairs(workspace:GetDescendants()) do
-if v:IsA("ProximityPrompt") then
-v.RequiresLineOfSight = false
-end
-end
-ThroughInteract = workspace.DescendantAdded:Connect(function(v)
-if v:IsA("ProximityPrompt") then
-v.RequiresLineOfSight = false
-end
-end)
-else
-ThroughInteract:Disconnect()
-for _,v in pairs(workspace:GetDescendants()) do
-if v:IsA("ProximityPrompt") then
-v.RequiresLineOfSight = true
-end
-end
-end
-end})
-Interact:AddToggle("InstanceInteract",{
-Text = "Tương tác nhanh chóng",
-Default = false,
-Callback = function(v)
-if v then
-for _,v in pairs(workspace:GetDescendants()) do
-if v:IsA("ProximityPrompt") then
-v.HoldDuration = 0
-end
-end
-InstanceInteract = workspace.DescendantAdded:Connect(function(v)
-if v:IsA("ProximityPrompt") then
-v.HoldDuration = 0
-end
-end)
-else
-InstanceInteract:Disconnect()
-end
-end})
 
 Library:SetWatermarkVisibility(true)
 
