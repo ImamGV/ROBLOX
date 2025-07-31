@@ -214,7 +214,7 @@ end
 end)
 end})
 game:GetService("RunService").RenderStepped:Connect(function()
-game.Players.LocalPlayer.PlayerGui:FindFirstChild("TemporaryUI").PlayerInfo.CurrentSurvivors.Visible = not _G.HideBar
+game.Players.LocalPlayer.PlayerGui:FindFirstChild("TemporaryUI"):FindFirstChild("PlayerInfo").CurrentSurvivors.Visible = not _G.HideBar
 end)
 Misc:AddToggle("AlwaysHideBar",{
 Text = "Hide Survivors Bar",
@@ -240,9 +240,9 @@ Callback = function(v)
 _G.Heart = v or false
 game:GetService("RunService").RenderStepped:Connect(function()
 if _G.Heart then
-game:GetService("Players").LocalPlayer.PlayerGui.MainUI.MobileUI.Crosshair.Size = UDim2.new(0.05,_G.SizeHeart,0.05,_G.SizeHeart)
+game:GetService("Players").LocalPlayer.PlayerGui.MainUI:FindFirstChild("MobileUI").Crosshair.Size = UDim2.new(0.05,_G.SizeHeart,0.05,_G.SizeHeart)
 else
-game:GetService("Players").LocalPlayer.PlayerGui.MainUI.MobileUI.Crosshair.Size = UDim2.new(0.05,0,0.05,0)
+game:GetService("Players").LocalPlayer.PlayerGui.MainUI:FindFirstChild("MobileUI").Crosshair.Size = UDim2.new(0.05,0,0.05,0)
 end
 end)
 end})
@@ -466,7 +466,7 @@ Callback = function(v)
 _G.Invisible = v
 end}):AddKeyPicker("AutoInteractKeybind", {
    Default = "G",
-   Text = "Auto Interact",
+   Text = "Invisible",
    Mode = Library.IsMobile and "Toggle" or "Hold",
    SyncToggleState = Library.IsMobile
 })
