@@ -464,7 +464,28 @@ Text = "Invisible",
 Default = false,
 Callback = function(v)
 _G.Invisible = v
-end})
+end}):AddKeyPicker("AutoInteractKeybind", {
+   Default = "G",
+   Text = "Auto Interact",
+   Mode = Library.IsMobile and "Toggle" or "Hold",
+   SyncToggleState = Library.IsMobile
+})
+Players:AddToggle("SpamFootstepFE",{
+Text = "Spam Footstep (FE)",
+Default = false,
+Callback = function(v)
+_G.SpamFootstep = v
+game:GetService("RunService").RenderStepped:Connect(function()
+if _G.SpamFootstep then
+game:GetService("ReplicatedStorage"):WaitForChild("Modules"):WaitForChild("Network"):WaitForChild("UnreliableRemoteEvent"):FireServer("FootstepPlayed", 9)
+end
+end)
+end}):AddKeyPicker("AutoInteractKeybind", {
+   Default = "F",
+   Text = "Spam Footstep",
+   Mode = Library.IsMobile and "Toggle" or "Hold",
+   SyncToggleState = Library.IsMobile
+})
 
 Players:AddButton("No Blindness", function()
 game:GetService("ReplicatedStorage").Modules.StatusEffects.Blindness:Destroy()
