@@ -27,6 +27,7 @@ UIStroke.Transparency = 0
 end
 --// Create Highlight \\
 local function Highlight(target, color, name)
+task.wait(0.25)
 local Highlight = Instance.new('Highlight', target)
 --// Highlight \\
 Highlight.DepthMode = Enum.HighlightDepthMode.AlwaysOnTop
@@ -142,6 +143,15 @@ end
 wait(1)
 end
 end)
+end)
+end})
+Generator:AddToggle("AutoFarm",{
+Text = "Always unshow fix ui",
+Default = false,
+Callback = function(v)
+_G.UnshowFixUi = v
+game:GetService("RunService").RenderStepped:Connect(function()
+game:GetService("Players").LocalPlayer.PlayerGui:FindFirstChild("PuzzleUI").Enabled = not _G.UnshowFixUi
 end)
 end})
 Generator:AddButton("Teleport to generator",function()
@@ -564,6 +574,8 @@ for _, v in pairs(workspace.Players.Killers:GetChildren()) do
 if v:IsA("Model") and v.Parent.Name == "Killers" then
 Text(v.HumanoidRootPart, v.Name .. "\n\nSkin : " .. v:GetAttribute("SkinNameDisplay"), Color3.new(1), 14, "Killer_ESP")
 Highlight(v, Color3.new(1), "Killer_ESP")
+elseif v.Parent.Name == "Killers" and v:GetAttribute("Username") == game.Players.LocalPlayer.Name then
+v:FindFirstChild("Killer_ESP"):Destroy()
 end
 end
 KillerESP = workspace.Players.DescendantAdded:Connect(function(v)
@@ -571,6 +583,8 @@ wait(2)
 if v:IsA("Model") and v.Parent.Name == "Killers" then
 Text(v.HumanoidRootPart, v.Name .. "\n\nSkin : " .. v:GetAttribute("SkinNameDisplay"), Color3.new(1), 14, "Killer_ESP")
 Highlight(v, Color3.new(1), "Killer_ESP")
+elseif v.Parent.Name == "Killers" and v:GetAttribute("Username") == game.Players.LocalPlayer.Name then
+v:FindFirstChild("Killer_ESP"):Destroy()
 end
 end)
 else
@@ -587,6 +601,8 @@ for _, v in ipairs(workspace.Players.Survivors:GetChildren()) do
 if v:IsA("Model") and v.Parent.Name == "Survivors" then
 Text(v.HumanoidRootPart, v.Name, Color3.new(0,1), 14, "Survivor_ESP")
 Highlight(v, Color3.new(0,1), "Survivor_ESP")
+elseif v.Parent.Name == "Survivors" and v:GetAttribute("Username") == game.Players.LocalPlayer.Name then
+v:FindFirstChild("Survivor_ESP"):Destroy()
 end
 end
 SurvivalESP = workspace.Players.DescendantAdded:Connect(function(v)
@@ -594,6 +610,8 @@ wait(2)
 if v:IsA("Model") and v.Parent.Name == "Survivors" then
 Text(v.HumanoidRootPart, v.Name, Color3.new(0,1), 14, "Survivor_ESP")
 Highlight(v, Color3.new(0,1), "Survivor_ESP")
+elseif v.Parent.Name == "Survivors" and v:GetAttribute("Username") == game.Players.LocalPlayer.Name then
+v:FindFirstChild("Survivor_ESP"):Destroy()
 end
 end)
 else
