@@ -256,44 +256,6 @@ game:GetService("Players").LocalPlayer.PlayerGui.MainUI:FindFirstChild("MobileUI
 end
 end)
 end})
-Misc:AddDivider()
-Misc:AddSlider("HitboxTransparency",{
-Text = "Transparency",
-Min = 0.1,
-Default = 0.1,
-Max = 0.9,
-Rounding = 1,
-Compact = true,
-Callback = function(v)
-_G.HitboxTransparency = v or 0.1
-end})
-Misc:AddToggle("EnabledHitbox",{
-Text = "Hitbox Transparency",
-Default = false,
-Callback = function(v)
-if v then
-for _,v in pairs(workspace.Hitboxes:GetChildren()) do
-if v.Parent.Name == "Hitboxes" then
-v.Transparency = _G.HitboxTransparency or 0.1
-end
-end
-HitboxTran = workspace.Hitboxes.DescendantAdded:Connect(function(v)
-if v.Parent.Name == "Hitboxes" then
-v.Transparency = _G.HitboxTransparency or 0.1
-end
-end)
-else
-HitboxTran:Disconnect()
-for _,v in pairs(workspace.Hitboxes:GetChildren()) do
-if v.Parent.Name == "Hitboxes" then
-v.Transparency = 0
-end
-end
-end
-end})
-
-
-
 
 local Players = Tabs.Main:AddRightGroupbox('Player')
 
@@ -345,7 +307,7 @@ end
 end
 end)
 Players:AddLabel("Exclusively for your survivor")
-Players:AddSlider("MaxStamina",{
+Players:AddSlider("SurvivorMaxStamina",{
 Text = "Max Stamina",
 Min = 100,
 Default = 100,
@@ -355,7 +317,7 @@ Compact = true,
 Callback = function(v)
 _G.MaxStaminaS = v
 end})
-Players:AddSlider("StaminaGain",{
+Players:AddSlider("SurvivorStaminaGain",{
 Text = "Stamina Gain",
 Min = 30,
 Default = 30,
@@ -365,7 +327,7 @@ Compact = true,
 Callback = function(v)
 _G.StaminaGainS = v
 end})
-Players:AddSlider("StaminaLoss",{
+Players:AddSlider("SurvivorStaminaLoss",{
 Text = "Stamina Loss",
 Min = 1,
 Default = 10,
@@ -375,7 +337,7 @@ Compact = true,
 Callback = function(v)
 _G.StaminaLossS = v
 end})
-Players:AddSlider("StaminaSprint",{
+Players:AddSlider("SurvivorStaminaSprint",{
 Text = "Sprint Speed",
 Min = 24,
 Default = 28,
@@ -578,7 +540,7 @@ elseif v.Parent.Name == "Killers" and v:GetAttribute("Username") == game.Players
 v:FindFirstChild("Killer_ESP"):Destroy()
 end
 end
-KillerESP = workspace.Players.DescendantAdded:Connect(function(v)
+KillerESP = workspace.Players.Killers.ChildAdded:Connect(function(v)
 wait(2)
 if v:IsA("Model") and v.Parent.Name == "Killers" then
 Text(v.HumanoidRootPart, v.Name .. "\n\nSkin : " .. v:GetAttribute("SkinNameDisplay"), Color3.new(1), 14, "Killer_ESP")
@@ -605,7 +567,7 @@ elseif v.Parent.Name == "Survivors" and v:GetAttribute("Username") == game.Playe
 v:FindFirstChild("Survivor_ESP"):Destroy()
 end
 end
-SurvivalESP = workspace.Players.DescendantAdded:Connect(function(v)
+SurvivalESP = workspace.Players.Survivors.ChildAdded:Connect(function(v)
 wait(2)
 if v:IsA("Model") and v.Parent.Name == "Survivors" then
 Text(v.HumanoidRootPart, v.Name, Color3.new(0,1), 14, "Survivor_ESP")
@@ -634,12 +596,14 @@ Highlight(v, Color3.new(1), "Items_ESP")
 end
 end
 ItemsESP = workspace.Map.Ingame.DescendantAdded:Connect(function(v)
-if v:IsA("Model") and v.Name == "BloxyCola" and not v:FindFirstChild("Items_ESP") then
+if v:IsA("Model") and v then
+if v.Name == "BloxyCola" and not v:FindFirstChild("Items_ESP") then
 Text(v, v.Name, Color3.new(1,1), 14, "Items_ESP")
 Highlight(v, Color3.new(1,1), "Items_ESP")
-elseif v:IsA("Model") and v.Name == "Medkit" and not v:FindFirstChild("Items_ESP") then
+elseif v.Name == "Medkit" and not v:FindFirstChild("Items_ESP") then
 Text(v, v.Name, Color3.new(1), 14, "Items_ESP")
 Highlight(v, Color3.new(1), "Items_ESP")
+end
 end
 end)
 else
@@ -658,7 +622,7 @@ Text(v, v.Name, Color3.new(0,0,1), 14, "Generator_ESP")
 Highlight(v, Color3.new(0,0,1), "Generator_ESP")
 end
 end
-GeneratorESP = workspace.Map.Ingame.DescendantAdded:Connect(function(v)
+GeneratorESP = workspace.Map.Ingame.Map.ChildAdded:Connect(function(v)
 if v:IsA("Model") and v.Parent.Name == "Map" and v.Name == "Generator" and not v:FindFirstChild("Generator_ESP") then
 Text(v, v.Name, Color3.new(0,0,1), 14, "Generator_ESP")
 Highlight(v, Color3.new(0,0,1), "Generator_ESP")
