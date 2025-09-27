@@ -13,7 +13,7 @@ TextLabel.AnchorPoint = Vector2.new(0.5,0.5)
 TextLabel.BackgroundTransparency = 1
 TextLabel.BackgroundColor3 = Color3.new(0,0,0)
 TextLabel.TextColor3 = color
-TextLabel.Font = "RobotoMono"
+TextLabel.Font = "SourceSans"
 TextLabel.TextSize = fontsize
 TextLabel.TextTransparency = 0
 TextLabel.Visible = true
@@ -224,7 +224,7 @@ end
 end)
 end})
 game:GetService("RunService").RenderStepped:Connect(function()
-game.Players.LocalPlayer.PlayerGui:FindFirstChild("TemporaryUI"):FindFirstChild("PlayerInfo").CurrentSurvivors.Visible = not _G.HideBar
+game.Players.LocalPlayer.PlayerGui:FindFirstChild("TemporaryUI"):FindFirstChild("PlayerInfo"):FindFirstChild("CurrentSurvivors").Visible = not _G.HideBar
 end)
 Misc:AddToggle("AlwaysHideBar",{
 Text = "Hide Survivors Bar",
@@ -534,7 +534,7 @@ Callback = function(v)
 if v then
 for _, v in pairs(workspace.Players.Killers:GetChildren()) do
 if v:IsA("Model") and v.Parent.Name == "Killers" then
-Text(v.HumanoidRootPart, v.Name .. "\n\nSkin : " .. v:GetAttribute("SkinNameDisplay"), Color3.new(1), 14, "Killer_ESP")
+Text(v.HumanoidRootPart, v.Name .. "\n" .. v:GetAttribute("SkinNameDisplay"), Color3.new(1), 14, "Killer_ESP")
 Highlight(v, Color3.new(1), "Killer_ESP")
 elseif v.Parent.Name == "Killers" and v:GetAttribute("Username") == game.Players.LocalPlayer.Name then
 v:FindFirstChild("Killer_ESP"):Destroy()
@@ -543,7 +543,7 @@ end
 KillerESP = workspace.Players.Killers.ChildAdded:Connect(function(v)
 wait(2)
 if v:IsA("Model") and v.Parent.Name == "Killers" then
-Text(v.HumanoidRootPart, v.Name .. "\n\nSkin : " .. v:GetAttribute("SkinNameDisplay"), Color3.new(1), 14, "Killer_ESP")
+Text(v.HumanoidRootPart, v.Name .. "\n" .. v:GetAttribute("SkinNameDisplay"), Color3.new(1), 14, "Killer_ESP")
 Highlight(v, Color3.new(1), "Killer_ESP")
 elseif v.Parent.Name == "Killers" and v:GetAttribute("Username") == game.Players.LocalPlayer.Name then
 v:FindFirstChild("Killer_ESP"):Destroy()
@@ -622,7 +622,7 @@ Text(v, v.Name, Color3.new(0,0,1), 14, "Generator_ESP")
 Highlight(v, Color3.new(0,0,1), "Generator_ESP")
 end
 end
-GeneratorESP = workspace.Map.Ingame.Map.ChildAdded:Connect(function(v)
+GeneratorESP = workspace.Map.Ingame.Map.DescendantAdded:Connect(function(v)
 if v:IsA("Model") and v.Parent.Name == "Map" and v.Name == "Generator" and not v:FindFirstChild("Generator_ESP") then
 Text(v, v.Name, Color3.new(0,0,1), 14, "Generator_ESP")
 Highlight(v, Color3.new(0,0,1), "Generator_ESP")
@@ -674,7 +674,7 @@ local WatermarkConnection = game:GetService('RunService').RenderStepped:Connect(
 		FrameCounter = 0;
 	end;
 
-	Library:SetWatermark(('Forsaken | %s fps | %s ms'):format(
+	Library:SetWatermark(('%s fps\n%s ms'):format(
 		math.floor(FPS),
 		math.floor(game:GetService('Stats').Network.ServerStatsItem['Data Ping']:GetValue())
 	))
