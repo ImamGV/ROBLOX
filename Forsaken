@@ -151,7 +151,9 @@ Default = false,
 Callback = function(v)
 _G.UnshowFixUi = v
 game:GetService("RunService").RenderStepped:Connect(function()
+if game:GetService("Players").LocalPlayer.PlayerGui:FindFirstChild("PuzzleUI") then
 game:GetService("Players").LocalPlayer.PlayerGui:FindFirstChild("PuzzleUI").Enabled = not _G.UnshowFixUi
+end
 end)
 end})
 Generator:AddButton("Teleport to generator",function()
@@ -224,7 +226,9 @@ end
 end)
 end})
 game:GetService("RunService").RenderStepped:Connect(function()
+if game.Players.LocalPlayer.PlayerGui:FindFirstChild("TemporaryUI"):FindFirstChild("PlayerInfo"):FindFirstChild("CurrentSurvivors") then
 game.Players.LocalPlayer.PlayerGui:FindFirstChild("TemporaryUI"):FindFirstChild("PlayerInfo"):FindFirstChild("CurrentSurvivors").Visible = not _G.HideBar
+end
 end)
 Misc:AddToggle("AlwaysHideBar",{
 Text = "Hide Survivors Bar",
