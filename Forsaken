@@ -462,34 +462,119 @@ end}):AddKeyPicker("AutoInteractKeybind", {
    Mode = Library.IsMobile and "Toggle" or "Hold",
    SyncToggleState = Library.IsMobile
 })
-
-Players:AddButton("No Blindness", function()
-game:GetService("ReplicatedStorage").Modules.StatusEffects.Blindness:Destroy()
-end)
-Players:AddButton("No Slowspeed", function()
-game:GetService("ReplicatedStorage").Modules.StatusEffects.Slowness:Destroy()
-end)
-
-local Camera = Tabs.Main:AddLeftGroupbox('Camera Offical')
-
-Camera:AddSlider("FieldOfViewValue",{
-Text = "Field Of View",
-Min = 80,
-Default = 80,
-Max = 120,
-Rounding = 1,
-Compact = true,
-Callback = function(v)
-_G.FieldOfViewValue = v
-end})
-Camera:AddToggle("FOV",{
-Text = "Enabled",
+function disable_effect(name)
+if game:GetService("ReplicatedStorage").Modules.StatusEffects:FindFirstChild(name) then
+game:GetService("ReplicatedStorage").Modules.StatusEffects:FindFirstChild(name):Destroy()
+end
+end
+Players:AddToggle("NoPoisoned",{
+Text = "No Poisoned",
 Default = false,
 Callback = function(v)
-_G.FieldOfView = v
+if v then
+disable_effect("Poisoned")
+end
+end})
+Players:AddToggle("NoConfusion",{
+Text = "No Confusion",
+Default = false,
+Callback = function(v)
+if v then
+disable_effect("Confusion")
+end
+end})
+Players:AddToggle("NoNausea",{
+Text = "No Nausea",
+Default = false,
+Callback = function(v)
+if v then
+disable_effect("Nausea")
+end
+end})
+Players:AddToggle("NoWeakness",{
+Text = "No Weakness",
+Default = false,
+Callback = function(v)
+if v then
+disable_effect("Weakness")
+end
+end})
+Players:AddToggle("NoBleeding",{
+Text = "No Bleeding",
+Default = false,
+Callback = function(v)
+if v then
+disable_effect("Bleeding")
+end
+end})
+Players:AddToggle("NoBurning",{
+Text = "No Burning",
+Default = false,
+Callback = function(v)
+if v then
+disable_effect("Burning")
+end
+end})
+Players:AddToggle("NoHelpless",{
+Text = "No Helpless",
+Default = false,
+Callback = function(v)
+if v then
+disable_effect("Helpless")
+end
+end})
+Players:AddToggle("NoBlindness",{
+Text = "No Blindness",
+Default = false,
+Callback = function(v)
+if v then
+disable_effect("Blindness")
+end
+end})
+Players:AddToggle("NoSubspaced",{
+Text = "No Subspaced",
+Default = false,
+Callback = function(v)
+if v then
+game:GetService("ReplicatedStorage").Modules.StatusEffects.SurvivorExclusive.Subspaced:Destroy()
+end
+end})
+Players:AddToggle("NoHallucination",{
+Text = "No Hallucination",
+Default = false,
+Callback = function(v)
+if v then
+game:GetService("ReplicatedStorage").Modules.StatusEffects.KillerExclusive.Hallucination:Destroy()
+end
+end})
+Players:AddToggle("NoCurrupted",{
+Text = "No Currupted",
+Default = false,
+Callback = function(v)
+if v then
+game:GetService("ReplicatedStorage").Modules.StatusEffects.KillerExclusive.Corrupted:Destroy()
+end
+end})
+Players:AddToggle("NoGlitched",{
+Text = "No Glitched",
+Default = false,
+Callback = function(v)
+if v then
+game:GetService("ReplicatedStorage").Modules.StatusEffects.KillerExclusive.Glitched:Destroy()
+end
+end})
+local Camera = Tabs.Main:AddLeftGroupbox('Camera Offical')
+local oldfov = game.Players.LocalPlayer.Character.FOVMultipliers.FOVSetting.Value
+Camera:AddToggle("MFOV",{
+Text = "Max Field Of View",
+Default = false,
+Callback = function(v)
+_G.MaxFieldOfView = v
 game:GetService("RunService").RenderStepped:Connect(function()
-if _G.FieldOfView then
-workspace.Camera.FieldOfView = _G.FieldOfViewValue or 80
+if _G.MaxFieldOfView then
+game.Players.LocalPlayer.Character.FOVMultipliers.FOVSetting.Value = 1.5
+else
+game.Players.LocalPlayer.Character.FOVMultipliers.FOVSetting.Value = oldfov
 end
 end)
 end})
