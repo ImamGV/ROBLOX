@@ -572,7 +572,6 @@ game:GetService("ReplicatedStorage").Modules.StatusEffects.KillerExclusive.Glitc
 end
 end})
 local Camera = Tabs.Main:AddLeftGroupbox('Camera Offical')
-local oldfov = game.Players.LocalPlayer.Character.FOVMultipliers.FOVSetting.Value
 Camera:AddToggle("MFOV",{
 Text = "Max Field Of View",
 Default = false,
@@ -582,7 +581,7 @@ game:GetService("RunService").RenderStepped:Connect(function()
 if _G.MaxFieldOfView then
 game.Players.LocalPlayer.Character.FOVMultipliers.FOVSetting.Value = 1.5
 else
-game.Players.LocalPlayer.Character.FOVMultipliers.FOVSetting.Value = oldfov
+game.Players.LocalPlayer.Character.FOVMultipliers.FOVSetting.Value = 1.1
 end
 end)
 end})
