@@ -483,6 +483,14 @@ if v then
 disable_effect("Confusion")
 end
 end})
+Players:AddToggle("NoSlowness",{
+Text = "No Slowness",
+Default = false,
+Callback = function(v)
+if v then
+disable_effect("Slowness")
+end
+end})
 Players:AddToggle("NoNausea",{
 Text = "No Nausea",
 Default = false,
