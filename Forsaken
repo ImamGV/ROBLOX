@@ -303,7 +303,7 @@ end})
 local Players = Tabs.Main:AddRightGroupbox('Player')
 
 Players:AddDropdown('SpeedBoostValue', {
-	Values = {'1', '2', '3', '4', '5', 'As fast as possible"},
+	Values = {'1', '2', '3', '4', '5', 'As fast as possible'},
 	Default = 2,
 	Multi = false,
 	Text = 'Tpwalk',
@@ -839,19 +839,19 @@ Default = false,
 Callback = function(v)
 if v then
 for _,v in ipairs(workspace.Map.Ingame:GetDescendants()) do
-if v:find("shadows") then
+if v:lower():find("shadows") then
 v.Shadow.CanTouch = false
 end
 end
 AntiJohnDoeStomp = workspace.Map.Ingame.DescendantAdded:Connect(function(v)
-if v:find("shadows") then
+if v:lower():find("shadows") then
 v.Shadow.CanTouch = false
 end
 end)
 else
 AntiJohnDoeStomp:Disconnect()
 for _,v in ipairs(workspace.Map.Ingame:GetDescendants()) do
-if v:find("shadows") then
+if v:lower():find("shadows") then
 v.Shadow.CanTouch = true
 end
 end
