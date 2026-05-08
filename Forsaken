@@ -1,3 +1,4 @@
+
 --// Create Text \\
 local function Text(target, title, color, fontsize, name)
 local Billboard = Instance.new("BillboardGui", target)
@@ -51,6 +52,8 @@ local Library = loadstring(game:HttpGet(repo .. 'Library.lua'))()
 local ThemeManager = loadstring(game:HttpGet(repo .. 'addons/ThemeManager.lua'))()
 local SaveManager = loadstring(game:HttpGet(repo .. 'addons/SaveManager.lua'))()
 
+Library:Notify("Loading..",5)
+wait(1)
 local Options = Library.Options
 local Toggles = Library.Toggles
 
@@ -74,18 +77,20 @@ local Tabs = {
 	Main = Window:AddTab('Main'),
 	Settings = Window:AddTab('Setting')
 }
+Library:Notify("Loaded UI",2)
+wait(0.2)
 --// Code \\
 
 local Generator = Tabs.Main:AddRightGroupbox('Generator')
 
 
 Generator:AddDropdown('FixMode', {
-	Values = {'Fast', 'Normal', 'Slow'},
+	Values = {'Fast Fix (2s)', 'Fit Fix (5s)', 'Slow Fix (10s)'},
 	Default = 3,
 	Multi = false,
-	Text = 'Delay',
+	Text = 'Select Mode Generator',
 	Searchable = false,
-        Callback = function(v)
+    Callback = function(v)
 _G.FixMode = v or "Normal"
 end})
 Generator:AddToggle("AutoGenerator",{
@@ -96,22 +101,56 @@ _G.AutoGen = v
 pcall(function()
 task.spawn(function()
 while _G.AutoGen do
-if _G.FixMode == "Fast" and game:GetService("Players").LocalPlayer.PlayerGui:FindFirstChild("PuzzleUI") then
-wait(2)
+if _G.FixMode == "Fast Fix (2s)" and game:GetService("Players").LocalPlayer.PlayerGui:FindFirstChild("PuzzleUI") then
+Library:Notify("Fix generator in 2s",1)
+wait(1)
+Library:Notify("Fix generator in 1s",1)
+wait(1)
+Library:Notify("Fixed once generator",1)
 for _,v in ipairs(workspace["Map"]["Ingame"]["Map"]:GetChildren()) do
 if v.Name == "Generator" then
 v.Remotes.RE:FireServer()
 end
 end
-elseif _G.FixMode == "Normal" and game:GetService("Players").LocalPlayer.PlayerGui:FindFirstChild("PuzzleUI") then
-wait(4)
+elseif _G.FixMode == "Fit Fix (5s)" and game:GetService("Players").LocalPlayer.PlayerGui:FindFirstChild("PuzzleUI") then
+Library:Notify("Fix generator in 5s",1)
+wait(1)
+Library:Notify("Fix generator in 4s",1)
+wait(1)
+Library:Notify("Fix generator in 3s",1)
+wait(1)
+Library:Notify("Fix generator in 2s",1)
+wait(1)
+Library:Notify("Fix generator in 1s",1)
+wait(1)
+Library:Notify("Fixed once generator",1)
 for _,v in ipairs(workspace["Map"]["Ingame"]["Map"]:GetChildren()) do
 if v.Name == "Generator" then
 v.Remotes.RE:FireServer()
 end
 end
-elseif _G.FixMode == "Slow" and game:GetService("Players").LocalPlayer.PlayerGui:FindFirstChild("PuzzleUI") then
-wait(6)
+elseif _G.FixMode == "Slow Fix (10s)" and game:GetService("Players").LocalPlayer.PlayerGui:FindFirstChild("PuzzleUI") then
+Library:Notify("Fix generator in 10s",1)
+wait(1)
+Library:Notify("Fix generator in 9s",1)
+wait(1)
+Library:Notify("Fix generator in 8s",1)
+wait(1)
+Library:Notify("Fix generator in 7s",1)
+wait(1)
+Library:Notify("Fix generator in 6s",1)
+wait(1)
+Library:Notify("Fix generator in 5s",1)
+wait(1)
+Library:Notify("Fix generator in 4s",1)
+wait(1)
+Library:Notify("Fix generator in 3s",1)
+wait(1)
+Library:Notify("Fix generator in 2s",1)
+wait(1)
+Library:Notify("Fix generator in 1s",1)
+wait(1)
+Library:Notify("Fixed once generator",1)
 for _,v in ipairs(workspace["Map"]["Ingame"]["Map"]:GetChildren()) do
 if v.Name == "Generator" then
 v.Remotes.RE:FireServer()
@@ -124,7 +163,7 @@ end)
 end)
 end})
 Generator:AddToggle("AutoFarm",{
-Text = "Framing from generator",
+Text = "Farm Generator",
 Default = false,
 Callback = function(v)
 _G.AutoFarm = v
@@ -146,7 +185,7 @@ end)
 end)
 end})
 Generator:AddToggle("AutoFarm",{
-Text = "Always unshow fix ui",
+Text = "Hide Editing Progress",
 Default = false,
 Callback = function(v)
 _G.UnshowFixUi = v
@@ -156,7 +195,7 @@ game:GetService("Players").LocalPlayer.PlayerGui:FindFirstChild("PuzzleUI").Enab
 end
 end)
 end})
-Generator:AddButton("Teleport to generator",function()
+Generator:AddButton("Teleport To Generator",function()
 _G.TTG = true
 task.spawn(function()
 while _G.TTG do
@@ -208,14 +247,14 @@ end
 end
 end)
 Misc:AddToggle("AlwaysEatPizza",{
-Text = "Always eat pizza",
+Text = "Eat Pizza (Low Health)",
 Default = false,
 Callback = function(v)
 _G.AlwaysEatPizza = v
 end})
 Misc:AddDivider()
 Misc:AddToggle("AlwaysCoinFlip",{
-Text = "Auto Flip Coin",
+Text = "Auto Coins Flip",
 Default = false,
 Callback = function(v)
 _G.AutoFlipCoins = v or false
@@ -264,12 +303,12 @@ end})
 local Players = Tabs.Main:AddRightGroupbox('Player')
 
 Players:AddDropdown('SpeedBoostValue', {
-	Values = {'1', '2', '3', '4', '5'},
+	Values = {'1', '2', '3', '4', '5', 'As fast as possible"},
 	Default = 2,
 	Multi = false,
 	Text = 'Tpwalk',
 	Searchable = false,
-        Callback = function(v)
+    Callback = function(v)
 _G.SpeedBoostValue = v or '2'
 end})
 
@@ -293,6 +332,9 @@ game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame += game.Players.Local
 game.Players.LocalPlayer.Character.HumanoidRootPart.CanCollide = true
 elseif _G.SpeedBoostValue == '5' then
 game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame += game.Players.LocalPlayer.Character.Humanoid.MoveDirection * 0.5
+game.Players.LocalPlayer.Character.HumanoidRootPart.CanCollide = true
+elseif _G.SpeedBoostValue == 'As fast as possible' then
+game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame += game.Players.LocalPlayer.Character.Humanoid.MoveDirection * 2.5
 game.Players.LocalPlayer.Character.HumanoidRootPart.CanCollide = true
 end
 wait()
@@ -446,35 +488,11 @@ end}):AddKeyPicker("AutoInteractKeybind", {
    Mode = Library.IsMobile and "Toggle" or "Hold",
    SyncToggleState = Library.IsMobile
 })
-Players:AddToggle("SpamFootstepFE",{
-Text = "Spam Footstep (FE)",
-Default = false,
-Callback = function(v)
-_G.SpamFootstep = v
-game:GetService("RunService").RenderStepped:Connect(function()
-if _G.SpamFootstep then
-game:GetService("ReplicatedStorage"):WaitForChild("Modules"):WaitForChild("Network"):WaitForChild("UnreliableRemoteEvent"):FireServer("FootstepPlayed", 9)
-end
-end)
-end}):AddKeyPicker("AutoInteractKeybind", {
-   Default = "F",
-   Text = "Spam Footstep",
-   Mode = Library.IsMobile and "Toggle" or "Hold",
-   SyncToggleState = Library.IsMobile
-})
 function disable_effect(name)
 if game:GetService("ReplicatedStorage").Modules.StatusEffects:FindFirstChild(name) then
 game:GetService("ReplicatedStorage").Modules.StatusEffects:FindFirstChild(name):Destroy()
 end
 end
-Players:AddToggle("NoPoisoned",{
-Text = "No Poisoned",
-Default = false,
-Callback = function(v)
-if v then
-disable_effect("Poisoned")
-end
-end})
 Players:AddToggle("NoConfusion",{
 Text = "No Confusion",
 Default = false,
@@ -507,30 +525,6 @@ if v then
 disable_effect("Weakness")
 end
 end})
-Players:AddToggle("NoBleeding",{
-Text = "No Bleeding",
-Default = false,
-Callback = function(v)
-if v then
-disable_effect("Bleeding")
-end
-end})
-Players:AddToggle("NoBurning",{
-Text = "No Burning",
-Default = false,
-Callback = function(v)
-if v then
-disable_effect("Burning")
-end
-end})
-Players:AddToggle("NoHelpless",{
-Text = "No Helpless",
-Default = false,
-Callback = function(v)
-if v then
-disable_effect("Helpless")
-end
-end})
 Players:AddToggle("NoBlindness",{
 Text = "No Blindness",
 Default = false,
@@ -555,14 +549,6 @@ if v then
 game:GetService("ReplicatedStorage").Modules.StatusEffects.KillerExclusive.Hallucination:Destroy()
 end
 end})
-Players:AddToggle("NoCurrupted",{
-Text = "No Currupted",
-Default = false,
-Callback = function(v)
-if v then
-game:GetService("ReplicatedStorage").Modules.StatusEffects.KillerExclusive.Corrupted:Destroy()
-end
-end})
 Players:AddToggle("NoGlitched",{
 Text = "No Glitched",
 Default = false,
@@ -572,6 +558,7 @@ game:GetService("ReplicatedStorage").Modules.StatusEffects.KillerExclusive.Glitc
 end
 end})
 local Camera = Tabs.Main:AddLeftGroupbox('Camera Offical')
+local fn = game.Players.LocalPlayer.Character.FOVMultipliers.FOVSetting.Value
 Camera:AddToggle("MFOV",{
 Text = "Max Field Of View",
 Default = false,
@@ -581,7 +568,7 @@ game:GetService("RunService").RenderStepped:Connect(function()
 if _G.MaxFieldOfView then
 game.Players.LocalPlayer.Character.FOVMultipliers.FOVSetting.Value = 1.5
 else
-game.Players.LocalPlayer.Character.FOVMultipliers.FOVSetting.Value = 1.1
+game.Players.LocalPlayer.Character.FOVMultipliers.FOVSetting.Value = fn
 end
 end)
 end})
@@ -752,8 +739,124 @@ SubspaceTripmineESP:Disconnect()
 Disable("SSTM_ESP")
 end
 end})
+local Interact = Tabs.Main:AddLeftGroupbox('Interact')
 
-
+Interact:AddToggle("Reach",{
+Text = "Reach Interact",
+Default = false,
+Callback = function(v)
+if v then
+for _,v in pairs(workspace:GetDescendants()) do
+if v:IsA("ProximityPrompt") then
+v.MaxActivationDistance = 15
+end
+end
+IncreasedDistance = workspace.DescendantAdded:Connect(function(v)
+if v:IsA("ProximityPrompt") then
+v.MaxActivationDistance = 15
+end
+end)
+else
+IncreasedDistance:Disconnect()
+for _,v in pairs(workspace:GetDescendants()) do
+if v:IsA("ProximityPrompt") then
+v.MaxActivationDistance = 8
+end
+end
+end
+end})
+Interact:AddToggle("ThroughInteract",{
+Text = "Through Interact",
+Default = false,
+Callback = function(v)
+if v then
+for _,v in pairs(workspace:GetDescendants()) do
+if v:IsA("ProximityPrompt") then
+v.RequiresLineOfSight = false
+end
+end
+ThroughInteract = workspace.DescendantAdded:Connect(function(v)
+if v:IsA("ProximityPrompt") then
+v.RequiresLineOfSight = false
+end
+end)
+else
+ThroughInteract:Disconnect()
+for _,v in pairs(workspace:GetDescendants()) do
+if v:IsA("ProximityPrompt") then
+v.RequiresLineOfSight = true
+end
+end
+end
+end})
+Interact:AddToggle("InstanceInteract",{
+Text = "Instance Interact",
+Default = false,
+Callback = function(v)
+if v then
+for _,v in pairs(workspace:GetDescendants()) do
+if v:IsA("ProximityPrompt") then
+v.HoldDuration = 0
+end
+end
+InstanceInteract = workspace.DescendantAdded:Connect(function(v)
+if v:IsA("ProximityPrompt") then
+v.HoldDuration = 0
+end
+end)
+else
+InstanceInteract:Disconnect()
+end
+end})
+local Disabled = Tabs.Main:AddRightGroupbox("Anti & Misc")
+Disabled:AddToggle("DJDT",{
+Text = "Anti Trail",
+Default = false,
+Callback = function(v)
+if v then
+for _,v in ipairs(workspace.Players:GetDescendants()) do
+if v.Name == "Trail" then
+v.CanTouch = false
+end
+end
+AntiJohnDoeTrail = workspace.DescendantAdded:Connect(function(v)
+if v.Name == "Trail" then
+v.CanTouch = false
+end
+end)
+else
+AntiJohnDoeTrail:Disconnect()
+for _,v in ipairs(workspace.Players:GetDescendants()) do
+if v.Name == "Trail" then
+v.CanTouch = true
+end
+end
+end
+end})
+Disabled:AddToggle("AJDS",{
+Text = "Anti John Doe Stomp",
+Default = false,
+Callback = function(v)
+if v then
+for _,v in ipairs(workspace.Map.Ingame:GetDescendants()) do
+if v:find("shadows") then
+v.Shadow.CanTouch = false
+end
+end
+AntiJohnDoeStomp = workspace.Map.Ingame.DescendantAdded:Connect(function(v)
+if v:find("shadows") then
+v.Shadow.CanTouch = false
+end
+end)
+else
+AntiJohnDoeStomp:Disconnect()
+for _,v in ipairs(workspace.Map.Ingame:GetDescendants()) do
+if v:find("shadows") then
+v.Shadow.CanTouch = true
+end
+end
+end
+end})
 
 Library:SetWatermarkVisibility(true)
 
