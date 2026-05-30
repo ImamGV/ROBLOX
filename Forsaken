@@ -37,6 +37,9 @@ _G.Fullbright = false
 _G.ThemeColorCustom = Color3.fromRGB(15, 15, 15)
 _G.MenuKeybindCustom = Enum.KeyCode.RightShift
 
+-- Biến lưu cấu hình FOV mặc định an toàn chống lỗi Nil
+local DefaultFOVValue = 1
+
 -- Khai báo hệ thống hàm vẽ ESP cơ bản
 local function Text(target, title, color, fontsize, name)
     if not target then return end
@@ -129,7 +132,7 @@ local ESPBox = Tabs.Main:AddLeftGroupbox('ESP')
 local InteractBox = Tabs.Main:AddLeftGroupbox('Interact')
 
 -- =========================================================================
--- FIX LỖI 1: TỐI ƯU VÒNG LẶP AUTO GENERATOR (SỬ DỤNG TASK.SPAWN CHỐNG FREEZE)
+-- FIX LỖI VÒNG LẶP AUTO GENERATOR (AN TOÀN TUYỆT ĐỐI CHỐNG NIL VALUE)
 -- =========================================================================
 GeneratorBox:AddDropdown('FixMode', {
 	Values = {'Fast Fix (2s)', 'Fit Fix (5s)', 'Slow Fix (10s)'},
@@ -157,15 +160,16 @@ GeneratorBox:AddToggle("AutoGenerator", {
         if v then
             task.spawn(function()
                 while _G.AutoGen do
-                    if game.Players.LocalPlayer.PlayerGui:FindFirstChild("PuzzleUI") then
+                    local pGui = game.Players.LocalPlayer:FindFirstChild("PlayerGui")
+                    if pGui and pGui:FindFirstChild("PuzzleUI") then
                         if _G.FixMode == "Fast Fix (2s)" then
                             task.wait(1) Library:Notify("Fixing... 1s left", 1) task.wait(1)
                         elseif _G.FixMode == "Fit Fix (5s)" then
                             for i = 4, 1, -1 do task.wait(1) Library:Notify("Fixing... " .. i .. "s left", 1) end task.wait(1)
-                        local else -- Slow Fix (10s)
-                            for i = i or 9, 1, -1 do task.wait(1) end task.wait(1)
+                        else -- Slow Fix (10s)
+                            for i = 9, 1, -1 do task.wait(1) end task.wait(1)
                         end
-                        if game.Players.LocalPlayer.PlayerGui:FindFirstChild("PuzzleUI") and _G.AutoGen then
+                        if pGui and pGui:FindFirstChild("PuzzleUI") and _G.AutoGen then
                             FireGeneratorRemote()
                             Library:Notify("Fixed generator once!", 1)
                         end
@@ -186,10 +190,11 @@ GeneratorBox:AddToggle("AutoFarm", {
             task.spawn(function()
                 while _G.AutoFarm do
                     local char = game.Players.LocalPlayer.Character
-                    if char and char:FindFirstChild("HumanoidRootPart") and char:FindFirstChild("CollisionHitbox") and workspace:FindFirstChild("Map") then
+                    if char and char:FindFirstChild("HumanoidRootPart") and char:FindFirstChild("CollisionHitbox") and workspace:FindFirstChild("Map") and workspace.Map:FindFirstChild("Ingame") and workspace.Map.Ingame:FindFirstChild("Map") then
                         for _, gen in ipairs(workspace.Map.Ingame.Map:GetChildren()) do
                             if gen.Name == "Generator" and gen:FindFirstChild("Progress") and gen.Progress.Value < 100 then
-                                if not game.Players.LocalPlayer.PlayerGui:FindFirstChild("PuzzleUI") and gen:FindFirstChild("Main") and gen.Main:FindFirstChild("Prompt") then
+                                local pGui = game.Players.LocalPlayer:FindFirstChild("PlayerGui")
+                                if pGui and not pGui:FindFirstChild("PuzzleUI") and gen:FindFirstChild("Main") and gen.Main:FindFirstChild("Prompt") then
                                     char.HumanoidRootPart.Position = gen.Main.Position
                                     char.CollisionHitbox.Position = char.HumanoidRootPart.Position
                                     fireproximityprompt(gen.Main.Prompt)
@@ -214,7 +219,7 @@ GeneratorBox:AddButton("Teleport To Generator", function()
     _G.TTG = true
     task.spawn(function()
         local char = game.Players.LocalPlayer.Character
-        if char and char:FindFirstChild("HumanoidRootPart") and char:FindFirstChild("CollisionHitbox") and workspace:FindFirstChild("Map") then
+        if char and char:FindFirstChild("HumanoidRootPart") and char:FindFirstChild("CollisionHitbox") and workspace:FindFirstChild("Map") and workspace.Map:FindFirstChild("Ingame") and workspace.Map.Ingame:FindFirstChild("Map") then
             for _, gen in ipairs(workspace.Map.Ingame.Map:GetChildren()) do
                 if gen.Name == "Generator" and gen:FindFirstChild("Progress") and gen.Progress.Value < 100 then
                     char.HumanoidRootPart.Position = gen.Main.Position
@@ -229,7 +234,7 @@ GeneratorBox:AddButton("Teleport To Generator", function()
 end)
 
 -- =========================================================================
--- FIX LỖI 2: SỬA HOÀN TOÀN CƠ CHẾ TPWALK (SPEEDBOOST) KHÔNG CỦ HÀNH CRASH GAME
+-- ĐIỀU CHỈNH TPWALK (SPEEDBOOST) AN TOÀN TRÁNH BỊ NIL VALUE CHARACTER
 -- =========================================================================
 PlayerBox:AddDropdown('SpeedBoostValue', {
 	Values = {'1', '2', '3', '4', '5', 'As fast as possible'},
@@ -261,14 +266,14 @@ PlayerBox:AddToggle("SpeedBoost", {
                         root.CFrame += hum.MoveDirection * multiplier
                         root.CanCollide = true
                     end
-                    task.wait() -- Tránh việc loop chạy vô hạn bóp nghẹt CPU tầng vật lý
+                    task.wait() 
                 end
             end)
         end
     end
 })
 
--- Quản lý dữ liệu Stamina nâng cao thông qua Module gốc của game
+-- Nạp hệ thống module quản lý thể lực nâng cao từ Game ReplicatedStorage
 local StaminaScript = nil
 pcall(function()
     StaminaScript = require(game:GetService("ReplicatedStorage").Systems.Character.Game.Sprinting)
@@ -297,7 +302,7 @@ PlayerBox:AddToggle("InfStamina", {
         if v and StaminaScript then
             InfStaminaConn = game:GetService("RunService").RenderStepped:Connect(function()
                 if not _G.InfinityStamina then
-                    InfStaminaConn:Disconnect()
+                    if InfStaminaConn then InfStaminaConn:Disconnect() end
                     StaminaScript.StaminaLossDisabled = nil
                     return
                 end
@@ -316,7 +321,7 @@ PlayerBox:AddToggle("Invisible", {
 }):AddKeyPicker("InvisibleKeybind", { Default = "G", NoUI = true, Text = "Invisible Key" })
 
 -- =========================================================================
--- KHU VỰC ANTI-BUFF VÀ ESP (TÁCH BIỆT KHỎI LOOP RENDERSTEPPED NẶNG MÁY)
+-- KHU VỰC ANTI-BUFF VÀ KHỬ HIỆU ỨNG XẤU TRONG KHÔNG GIAN GAME
 -- =========================================================================
 local SaveFolder = workspace:FindFirstChild("SaveFolder") or Instance.new("Folder", workspace)
 SaveFolder.Name = "SaveFolder"
@@ -395,7 +400,7 @@ AntiBox:AddToggle("AntiStunned", {
 })
 
 -- =========================================================================
--- KHU VỰC CÀI ĐẶT CÁC TOGGLE VÀ CÁC THÀNH PHẦN GIAO DIỆN CÒN LẠI
+-- KHU VỰC CÀI ĐẶT CÁC CHỨC NĂNG PHỤ KHÁC (MISCELLANEOUS & CAMERA)
 -- =========================================================================
 MiscBox:AddToggle("AlwaysCoinFlip", { Text = "Auto Coins Flip", Default = false, Callback = function(v) _G.AutoFlipCoins = v end })
 MiscBox:AddToggle("AlwaysHideBar", { Text = "Hide Survivors Bar", Default = false, Callback = function(v) _G.HideBar = v end })
@@ -403,13 +408,12 @@ MiscBox:AddDivider()
 MiscBox:AddSlider("SizeHeart", { Text = "Size shiftlock", Min = 10, Max = 50, Default = 10, Rounding = 1, Compact = true, Callback = function(v) _G.SizeHeart = v end })
 MiscBox:AddToggle("EnabledHeart", { Text = "Enabled Crosshair Custom", Default = false, Callback = function(v) _G.Heart = v end })
 
-local fn = pcall(function() return game.Players.LocalPlayer.Character.FOVMultipliers.FOVSetting.Value end) and game.Players.LocalPlayer.Character.FOVMultipliers.FOVSetting.Value or 1
 CameraBox:AddToggle("MFOV", { Text = "Max Field Of View", Default = false, Callback = function(v) _G.MaxFieldOfView = v end })
 CameraBox:AddDivider()
 CameraBox:AddToggle("NoFog", { Text = "Removal Fog", Default = false, Callback = function(v) _G.NoFog = v end })
 CameraBox:AddToggle("Fullbright", { Text = "Always Light Cover", Default = false, Callback = function(v) _G.Fullbright = v end })
 
--- Đồ họa hiển thị ESP của thực thể nhân vật & Zombies
+-- Đồ họa hiển thị ESP các thực thể trong trò chơi (Check Nil Folder an toàn)
 local KillerESPConn, SurvivorESPConn, ItemsESPConn, GenESPConn, TripmineESPConn = nil, nil, nil, nil, nil
 
 ESPBox:AddToggle("KE", {
@@ -419,13 +423,18 @@ ESPBox:AddToggle("KE", {
         if v then
             local function check(k)
                 if k:IsA("Model") and k.Name ~= game.Players.LocalPlayer.Name then
-                    Text(k:WaitForChild("HumanoidRootPart", 5), k.Name .. "\n" .. (k:GetAttribute("SkinNameDisplay") or ""), Color3.new(1, 0, 0), 14, "Killer_ESP")
-                    Highlight(k, Color3.new(1, 0, 0), "Killer_ESP")
+                    local root = k:WaitForChild("HumanoidRootPart", 5)
+                    if root then
+                        Text(root, k.Name .. "\n" .. (k:GetAttribute("SkinNameDisplay") or ""), Color3.new(1, 0, 0), 14, "Killer_ESP")
+                        Highlight(k, Color3.new(1, 0, 0), "Killer_ESP")
+                    end
                 end
             end
-            if workspace:FindFirstChild("Players") and workspace.Players:FindFirstChild("Killers") then
-                for _, k in pairs(workspace.Players.Killers:GetChildren()) do check(k) end
-                KillerESPConn = workspace.Players.Killers.ChildAdded:Connect(check)
+            local plrs = workspace:FindFirstChild("Players")
+            local killers = plrs and plrs:FindFirstChild("Killers")
+            if killers then
+                for _, k in pairs(killers:GetChildren()) do check(k) end
+                KillerESPConn = killers.ChildAdded:Connect(check)
             end
         else
             Disable("Killer_ESP")
@@ -440,13 +449,18 @@ ESPBox:AddToggle("SE", {
         if v then
             local function check(s)
                 if s:IsA("Model") and s.Name ~= game.Players.LocalPlayer.Name then
-                    Text(s:WaitForChild("HumanoidRootPart", 5), s.Name, Color3.new(0, i or 1, 0), 14, "Survivor_ESP")
-                    Highlight(s, Color3.new(0, 1, 0), "Survivor_ESP")
+                    local root = s:WaitForChild("HumanoidRootPart", 5)
+                    if root then
+                        Text(root, s.Name, Color3.new(0, 1, 0), 14, "Survivor_ESP")
+                        Highlight(s, Color3.new(0, 1, 0), "Survivor_ESP")
+                    end
                 end
             end
-            if workspace:FindFirstChild("Players") and workspace.Players:FindFirstChild("Survivors") then
-                for _, s in pairs(workspace.Players.Survivors:GetChildren()) do check(s) end
-                SurvivorESPConn = workspace.Players.Survivors.ChildAdded:Connect(check)
+            local plrs = workspace:FindFirstChild("Players")
+            local survivors = plrs and plrs:FindFirstChild("Survivors")
+            if survivors then
+                for _, s in pairs(survivors:GetChildren()) do check(s) end
+                SurvivorESPConn = survivors.ChildAdded:Connect(check)
             end
         else
             Disable("Survivor_ESP")
@@ -511,7 +525,7 @@ ESPBox:AddToggle("SSTME", {
     end
 })
 
--- Tương tác với môi trường vật lý (ProximityPrompt Distance)
+-- Tương tác tầm xa với môi trường vật lý (ProximityPrompt)
 local ReachConn, ThroughConn, InstConn = nil, nil, nil
 InteractBox:AddToggle("Reach", {
     Text = "Reach Interact", Default = false,
@@ -538,8 +552,18 @@ InteractBox:AddToggle("InstanceInteract", {
     end
 })
 
+-- Ghi nhận cấu hình FOV gốc một cách an toàn không gây sập nil value
+task.spawn(function()
+    local char = game.Players.LocalPlayer.Character or game.Players.LocalPlayer.CharacterAdded:Wait()
+    pcall(function()
+        if char:WaitForChild("Model", 3) and char.Model:WaitForChild("FOVMultipliers", 3) and char.Model.FOVMultipliers:WaitForChild("FOVSetting", 3) then
+            DefaultFOVValue = char.Model.FOVMultipliers.FOVSetting.Value
+        end
+    end)
+end)
+
 -- =========================================================================
--- ĐỒNG BỘ VÒNG LẶP RENDERSTEPPED HỆ THỐNG (CHỈ XỬ LÝ HÌNH ẢNH TRỰC QUAN NHẸ)
+-- ĐỒNG BỘ VÒNG LẶP RENDERSTEPPED HỆ THỐNG (BỌC HOÀN TOÀN TRÁNH BỊ NIL VALUE CRASH)
 -- =========================================================================
 Library:SetWatermarkVisibility(true)
 local FrameTimer = tick()
@@ -553,14 +577,24 @@ game:GetService('RunService').RenderStepped:Connect(function()
 		FrameTimer = tick()
 		FrameCounter = 0
 	end
-	Library:SetWatermark(('%s FPS | %s MS'):format(math.floor(CurrentFPS), math.floor(game:GetService('Stats').Network.ServerStatsItem['Data Ping']:GetValue())))
+	
+    pcall(function()
+        local pingItem = game:GetService('Stats').Network.ServerStatsItem:FindFirstChild('Data Ping')
+        local pingVal = pingItem and pingItem:GetValue() or 0
+        Library:SetWatermark(('%s FPS | %s MS'):format(math.floor(CurrentFPS), math.floor(pingVal)))
+    end)
 
     local char = game.Players.LocalPlayer.Character
     if char and char:FindFirstChild("Humanoid") then
-        -- Cập nhật đồng bộ các thuộc tính Stamina thông qua Module gốc
+        -- Cập nhật đồng bộ các thuộc tính Stamina thông qua Module gốc an toàn
         if StaminaScript then
-            local isSurvivor = workspace.Players.Survivors:FindFirstChild(game.Players.LocalPlayer.Name)
-            local isKiller = workspace.Players.Killers:FindFirstChild(game.Players.LocalPlayer.Name)
+            local plrs = workspace:FindFirstChild("Players")
+            local survivors = plrs and plrs:FindFirstChild("Survivors")
+            local killers = plrs and plrs:FindFirstChild("Killers")
+            
+            local isSurvivor = survivors and survivors:FindFirstChild(game.Players.LocalPlayer.Name)
+            local isKiller = killers and killers:FindFirstChild(game.Players.LocalPlayer.Name)
+            
             if isSurvivor then
                 StaminaScript.MaxStamina = _G.MaxStaminaS or 100
                 StaminaScript.StaminaGain = _G.StaminaGainS or 30
@@ -575,7 +609,9 @@ game:GetService('RunService').RenderStepped:Connect(function()
         end
 
         -- Xử lý tàng hình bằng Animation ID
-        if _G.Invisible and char.Parent ~= workspace.Players:FindFirstChild("Spectating") then
+        local plrsFolder = workspace:FindFirstChild("Players")
+        local spectatingFolder = plrsFolder and plrsFolder:FindFirstChild("Spectating")
+        if _G.Invisible and (not spectatingFolder or char.Parent ~= spectatingFolder) then
             local anim = char.Humanoid:FindFirstChild("Invisible_Animation")
             if not anim then
                 local newAnim = Instance.new("Animation")
@@ -591,13 +627,13 @@ game:GetService('RunService').RenderStepped:Connect(function()
             end
         end
 
-        -- Cập nhật Field Of View của Camera nhân vật
-        if char:FindFirstChild("Model") and char.Model:FindFirstChild("FOVMultipliers") then
-            char.Model.FOVMultipliers.FOVSetting.Value = _G.MaxFieldOfView and 1.5 or fn
+        -- Cập nhật Field Of View của Camera nhân vật an toàn
+        if char:FindFirstChild("Model") and char.Model:FindFirstChild("FOVMultipliers") and char.Model.FOVMultipliers:FindFirstChild("FOVSetting") then
+            char.Model.FOVMultipliers.FOVSetting.Value = _G.MaxFieldOfView and 1.5 or DefaultFOVValue
         end
     end
 
-    -- Đồng bộ điều khiển các UI phụ của trò chơi
+    -- Đồng bộ điều khiển các UI phụ của trò chơi (Check thực thể tránh sập luồng)
     local pGui = game.Players.LocalPlayer:FindFirstChild("PlayerGui")
     if pGui then
         if pGui:FindFirstChild("PuzzleUI") then pGui.PuzzleUI.Enabled = not _G.UnshowFixUi end
@@ -609,7 +645,7 @@ game:GetService('RunService').RenderStepped:Connect(function()
         end
     end
 
-    -- Đồng bộ hóa Fullbright và Xóa Sương mù môi trường ánh sáng
+    -- Khóa độ sáng môi trường map
     if _G.Fullbright then
         game.Lighting.OutdoorAmbient = Color3.fromRGB(255, 255, 255)
         game.Lighting.Brightness = 1.5
@@ -619,37 +655,57 @@ game:GetService('RunService').RenderStepped:Connect(function()
         game.Lighting.Brightness = 1.5
         game.Lighting.GlobalShadows = true
     end
+    
     game.Lighting.FogStart = _G.NoFog and 0 or (game.Lighting:GetAttribute("FogStart") or 0)
     game.Lighting.FogEnd = _G.NoFog and math.huge or (game.Lighting:GetAttribute("FogEnd") or 1000)
     local atmosphere = game.Lighting:FindFirstChildOfClass("Atmosphere")
     if atmosphere then atmosphere.Density = _G.NoFog and 0 or (atmosphere:GetAttribute("Density") or 0.3) end
 
-    -- Gửi gói tin lật đồng xu liên tục từ xa lên máy chủ
+    -- Tự động lật đồng xu từ xa độc lập
     if _G.AutoFlipCoins then
-        game:GetService("ReplicatedStorage"):WaitForChild("Modules"):WaitForChild("Network"):WaitForChild("RemoteEvent"):FireServer("UseActorAbility", "CoinFlip")
+        local net = game:GetService("ReplicatedStorage"):FindFirstChild("Modules")
+        net = net and net:FindFirstChild("Network")
+        net = net and net:FindFirstChild("RemoteEvent")
+        if net then
+            net:FireServer("UseActorAbility", "CoinFlip")
+        end
     end
 end)
 
 -- =========================================================================
--- THIẾT LẬP MENU CÀI ĐẶT UI GỐC ĐẦY ĐỦ THÀNH PHẦN THEO YÊU CẦU
+-- ĐỒNG BỘ TOÀN DIỆN 9 THÀNH PHẦN GIAO DIỆN CẤU HÌNH GỐC (SETTINGS TAB)
 -- =========================================================================
 local MenuGroup = Tabs.Settings:AddLeftGroupbox("Menu Settings")
 local CreditsGroup = Tabs.Settings:AddRightGroupbox("Credits")
 
+-- 1. Toggle Thành phần giao diện gốc
 MenuGroup:AddToggle("KeybindMenuOpen", { Default = false, Text = "Open Keybind Menu", Callback = function(v) Library.KeybindFrame.Visible = v end })
 MenuGroup:AddToggle("ShowCustomCursor", { Text = "Custom Cursor", Default = true, Callback = function(v) Library.ShowCustomCursor = v end })
 MenuGroup:AddDivider()
 
--- Thành phần chọn phím tắt Keybind hệ thống
-MenuGroup:AddLabel("Menu Keybind"):AddKeyPicker("MenuKeybind", { Default = "RightShift", NoUI = true, Text = "Menu keybind", Callback = function(k) _G.MenuKeybindCustom = k end })
+-- 2. Label (functional) Thành phần giao diện gốc
+MenuGroup:AddLabel("Menu Controls & Keybinds:")
 
--- Thành phần chọn màu sắc ColorPicker bảng UI
-MenuGroup:AddLabel("Theme Palette"):AddColorPicker("CustomTheme", { Default = Color3.fromRGB(15, 15, 15), Title = "Menu Color", Callback = function(c) _G.ThemeColorCustom = c end })
+-- 3. Keybind Thành phần giao diện gốc
+MenuGroup:AddLabel("Menu Open/Close Hotkey"):AddKeyPicker("MenuKeybind", { Default = "RightShift", NoUI = true, Text = "Menu keybind", Callback = function(k) _G.MenuKeybindCustom = k end })
 
--- Thành phần Multi Dropdown mẫu cấu hình nâng cao
-MenuGroup:AddDropdown("MultiFilterSample", { Values = {"UI", "ESP", "Memory"}, Default = 1, Multi = true, Text = "UI Render Filter" })
+-- 4. Color Picker Thành phần giao diện gốc
+MenuGroup:AddLabel("UI Theme Color"):AddColorPicker("CustomTheme", { Default = Color3.fromRGB(15, 15, 15), Title = "Menu Color", Callback = function(c) _G.ThemeColorCustom = c end })
 
+-- 5. Dropdown Thành phần giao diện gốc
+MenuGroup:AddDropdown("RenderGraphicsLevel", { Values = {"Low Render (Fast)", "Medium Render", "High Quality"}, Default = 1, Multi = false, Text = "Graphics Engine Level" })
+
+-- 6. Multi Dropdown Thành phần giao diện gốc
+MenuGroup:AddDropdown("MultiFilterSample", { Values = {"UI Overlay", "ESP Framework", "Memory Cache"}, Default = 1, Multi = true, Text = "UI Advanced Filter" })
+
+-- 7. Slider Thành phần giao diện gốc
+MenuGroup:AddSlider("UIMenuScaleSlider", { Text = "UI Window Scale (%)", Min = 50, Max = 150, Default = 100, Rounding = 1, Compact = true, Callback = function(v) if Window then Window:SetPercentScale(v) end end })
+
+-- 8. Button Thành phần giao diện gốc
 MenuGroup:AddButton("Unload Script Hub", function() Library:Unload() end)
+
+-- 9. Divider Thành phần giao diện gốc
+MenuGroup:AddDivider()
 
 CreditsGroup:AddLabel("Developers:")
 CreditsGroup:AddLabel("Owner | rechedmcvn")
