@@ -1,67 +1,96 @@
+-- =========================================================================
+-- TỐI ƯU HÓA MÔI TRƯỜNG KHỞI CHẠY - YOUHUB | FORSAKEN
+-- =========================================================================
+if not game:IsLoaded() then game.Loaded:Wait() end
 
---// Create Text \\
+local WearspearLibrary = {
+    CurrentWindow = "YOUHUB | Forsaken Optimized"
+}
+print("Đã nạp cấu hình hệ thống: " .. WearspearLibrary.CurrentWindow)
+
+-- Khởi tạo đồng bộ hệ thống biến môi trường toàn cục (_G)
+local _G = getgenv and getgenv() or _G
+_G.FixMode = _G.FixMode or "Slow Fix (10s)"
+_G.AutoGen = false
+_G.AutoFarm = false
+_G.UnshowFixUi = false
+_G.TTG = false
+_G.AutoFlipCoins = false
+_G.HideBar = false
+_G.SizeHeart = 10
+_G.Heart = false
+_G.SpeedBoostValue = '2'
+_G.SpeedBoost = false
+_G.MaxStaminaS = 100
+_G.StaminaGainS = 30
+_G.StaminaLossS = 10
+_G.SpeedSprintS = 28
+_G.MaxStaminaK = 110
+_G.StaminaGainK = 30
+_G.StaminaLossK = 10
+_G.SpeedSprintK = 28
+_G.InfinityStamina = false
+_G.Invisible = false
+_G.MaxFieldOfView = false
+_G.NoFog = false
+_G.Fullbright = false
+_G.ThemeColorCustom = Color3.fromRGB(15, 15, 15)
+_G.MenuKeybindCustom = Enum.KeyCode.RightShift
+
+-- Khai báo hệ thống hàm vẽ ESP cơ bản
 local function Text(target, title, color, fontsize, name)
-local Billboard = Instance.new("BillboardGui", target)
-local TextLabel = Instance.new("TextLabel", Billboard)
-local UIStroke = Instance.new("UIStroke", TextLabel)
---// Billboard \\
-Billboard.AlwaysOnTop = true
-Billboard.Size = UDim2.new(0,400,0,100)
-Billboard.Name = name
-Billboard.Active = true
---// TextLabel \\
-TextLabel.AnchorPoint = Vector2.new(0.5,0.5)
-TextLabel.BackgroundTransparency = 1
-TextLabel.BackgroundColor3 = Color3.new(0,0,0)
-TextLabel.TextColor3 = color
-TextLabel.Font = "SourceSansBold"
-TextLabel.TextSize = fontsize
-TextLabel.TextTransparency = 0
-TextLabel.Visible = true
-TextLabel.Text = title
-TextLabel.Size = UDim2.new(1,0,0,0)
-TextLabel.Position = UDim2.new(0.5,0,0.7,-35)
---// UIStroke \\
-UIStroke.Thickness = 1
-UIStroke.Color = Color3.new()
-UIStroke.Transparency = 0
+    if not target then return end
+    local Billboard = Instance.new("BillboardGui")
+    Billboard.AlwaysOnTop = true
+    Billboard.Size = UDim2.new(0, 400, 0, 100)
+    Billboard.Name = name
+    Billboard.Active = true
+    
+    local TextLabel = Instance.new("TextLabel", Billboard)
+    TextLabel.AnchorPoint = Vector2.new(0.5, 0.5)
+    TextLabel.BackgroundTransparency = 1
+    TextLabel.TextColor3 = color
+    TextLabel.Font = Enum.Font.SourceSansBold
+    TextLabel.TextSize = fontsize
+    TextLabel.Text = title
+    TextLabel.Size = UDim2.new(1, 0, 0, 40)
+    TextLabel.Position = UDim2.new(0.5, 0, 0.5, 0)
+    
+    local UIStroke = Instance.new("UIStroke", TextLabel)
+    UIStroke.Thickness = 1
+    UIStroke.Color = Color3.new(0, 0, 0)
+    
+    Billboard.Parent = target
 end
---// Create Highlight \\
+
 local function Highlight(target, color, name)
-task.wait(0.25)
-local Highlight = Instance.new('Highlight', target)
---// Highlight \\
-Highlight.DepthMode = Enum.HighlightDepthMode.AlwaysOnTop
-Highlight.FillColor = color
-Highlight.OutlineColor = color
-Highlight.FillTransparency = 1
-Highlight.OutlineTransparency =  0
-Highlight.Name = name
+    if not target or target:FindFirstChild(name) then return end
+    local hl = Instance.new('Highlight')
+    hl.DepthMode = Enum.HighlightDepthMode.AlwaysOnTop
+    hl.FillColor = color
+    hl.OutlineColor = color
+    hl.FillTransparency = 1
+    hl.OutlineTransparency = 0
+    hl.Name = name
+    hl.Parent = target
 end
---// Disable Text & Highlight \\
+
 local function Disable(name)
-for _,v in ipairs(workspace:GetDescendants()) do
-if v.Name == name then
-v:Destroy()
+    for _, v in ipairs(workspace:GetDescendants()) do
+        if v.Name == name then
+            v:Destroy()
+        end
+    end
 end
-end
-end
---// Library \\
+
+-- Nạp Thư Viện Giao Diện LinoriaLib
 local repo = 'https://raw.githubusercontent.com/mstudio45/LinoriaLib/main/'
 local Library = loadstring(game:HttpGet(repo .. 'Library.lua'))()
 local ThemeManager = loadstring(game:HttpGet(repo .. 'addons/ThemeManager.lua'))()
 local SaveManager = loadstring(game:HttpGet(repo .. 'addons/SaveManager.lua'))()
 
-Library:Notify("Hello " .. game.Players.LocalPlayer.DisplayName .. ", thanks for use my script :D",5)
+Library:Notify("Hello " .. game.Players.LocalPlayer.DisplayName .. ", thanks for using YOUHUB Optimized! :D", 5)
 
-local Options = Library.Options
-local Toggles = Library.Toggles
-
-Library.ShowToggleFrameInKeybinds = true
-Library.ShowCustomCursor = true
-Library.NotifySide = "Left"
-
---// Create Window \\
 local Window = Library:CreateWindow({
 	Title = 'YOUHUB | Forsaken',
 	Center = true,
@@ -72,784 +101,564 @@ local Window = Library:CreateWindow({
 	TabPadding = 8,
 	MenuFadeTime = 0
 })
---// Create Tab \\
+
 local Tabs = {
     Info = Window:AddTab('Info'),
 	Main = Window:AddTab('Main'),
 	Settings = Window:AddTab('Setting')
 }
---// Code \\
-local Info = Tabs.Info:AddLeftGroupbox("Info")
-local username = game:GetService("Players").LocalPlayer.DisplayName
-Info:AddLabel('Username : ' .. username)
-local userid = game:GetService("Players").LocalPlayer.UserId
-Info:AddLabel('User ID : ' .. userid)
-local client = identifyexecutor()
-Info:AddLabel('Client : ' .. client)
+
+-- =========================================================================
+-- KHU VỰC THIẾT LẬP GIAO DIỆN (INFO TAB)
+-- =========================================================================
+local InfoBox = Tabs.Info:AddLeftGroupbox("Info")
+InfoBox:AddLabel('Username : ' .. game.Players.LocalPlayer.DisplayName)
+InfoBox:AddLabel('User ID : ' .. game.Players.LocalPlayer.UserId)
+InfoBox:AddLabel('Client : ' .. (identifyexecutor and identifyexecutor() or "Unknown"))
 local userinputservice = game:GetService("UserInputService")
 local mobile = (userinputservice:GetPlatform() == Enum.Platform.Android or userinputservice:GetPlatform() == Enum.Platform.IOS)
-Info:AddLabel('Device : ' .. if mobile then "Mobile" else "PC")
+InfoBox:AddLabel('Device : ' .. (if mobile then "Mobile" else "PC"))
 
-local Generator = Tabs.Main:AddRightGroupbox('Generator')
+-- Khởi tạo các Groupbox chức năng chính
+local GeneratorBox = Tabs.Main:AddRightGroupbox('Generator')
+local PlayerBox = Tabs.Main:AddRightGroupbox('Player')
+local AntiBox = Tabs.Main:AddRightGroupbox("Anti")
+local MiscBox = Tabs.Main:AddLeftGroupbox('Miscellaneous')
+local CameraBox = Tabs.Main:AddLeftGroupbox('Camera Official')
+local ESPBox = Tabs.Main:AddLeftGroupbox('ESP')
+local InteractBox = Tabs.Main:AddLeftGroupbox('Interact')
 
-
-Generator:AddDropdown('FixMode', {
+-- =========================================================================
+-- FIX LỖI 1: TỐI ƯU VÒNG LẶP AUTO GENERATOR (SỬ DỤNG TASK.SPAWN CHỐNG FREEZE)
+-- =========================================================================
+GeneratorBox:AddDropdown('FixMode', {
 	Values = {'Fast Fix (2s)', 'Fit Fix (5s)', 'Slow Fix (10s)'},
 	Default = 3,
 	Multi = false,
 	Text = 'Select Mode Generator',
-	Searchable = false,
+    Callback = function(v) _G.FixMode = v end
+})
+
+local function FireGeneratorRemote()
+    if workspace:FindFirstChild("Map") and workspace.Map:FindFirstChild("Ingame") and workspace.Map.Ingame:FindFirstChild("Map") then
+        for _, v in ipairs(workspace.Map.Ingame.Map:GetChildren()) do
+            if v.Name == "Generator" and v:FindFirstChild("Remotes") and v.Remotes:FindFirstChild("RE") then
+                v.Remotes.RE:FireServer()
+            end
+        end
+    end
+end
+
+GeneratorBox:AddToggle("AutoGenerator", {
+    Text = "Always fix generator",
+    Default = false,
     Callback = function(v)
-_G.FixMode = v or "Normal"
-end})
-Generator:AddToggle("AutoGenerator",{
-Text = "Always fix generator",
-Default = false,
-Callback = function(v)
-_G.AutoGen = v
-pcall(function()
-task.spawn(function()
-while _G.AutoGen do
-if _G.FixMode == "Fast Fix (2s)" and game:GetService("Players").LocalPlayer.PlayerGui:FindFirstChild("PuzzleUI") then
-Library:Notify("Fix generator in 2s",1)
-wait(1)
-Library:Notify("Fix generator in 1s",1)
-wait(1)
-Library:Notify("Fixed once generator",1)
-for _,v in ipairs(workspace["Map"]["Ingame"]["Map"]:GetChildren()) do
-if v.Name == "Generator" then
-v.Remotes.RE:FireServer()
-end
-end
-elseif _G.FixMode == "Fit Fix (5s)" and game:GetService("Players").LocalPlayer.PlayerGui:FindFirstChild("PuzzleUI") then
-Library:Notify("Fix generator in 5s",1)
-wait(1)
-Library:Notify("Fix generator in 4s",1)
-wait(1)
-Library:Notify("Fix generator in 3s",1)
-wait(1)
-Library:Notify("Fix generator in 2s",1)
-wait(1)
-Library:Notify("Fix generator in 1s",1)
-wait(1)
-Library:Notify("Fixed once generator",1)
-for _,v in ipairs(workspace["Map"]["Ingame"]["Map"]:GetChildren()) do
-if v.Name == "Generator" then
-v.Remotes.RE:FireServer()
-end
-end
-elseif _G.FixMode == "Slow Fix (10s)" and game:GetService("Players").LocalPlayer.PlayerGui:FindFirstChild("PuzzleUI") then
-Library:Notify("Fix generator in 10s",1)
-wait(1)
-Library:Notify("Fix generator in 9s",1)
-wait(1)
-Library:Notify("Fix generator in 8s",1)
-wait(1)
-Library:Notify("Fix generator in 7s",1)
-wait(1)
-Library:Notify("Fix generator in 6s",1)
-wait(1)
-Library:Notify("Fix generator in 5s",1)
-wait(1)
-Library:Notify("Fix generator in 4s",1)
-wait(1)
-Library:Notify("Fix generator in 3s",1)
-wait(1)
-Library:Notify("Fix generator in 2s",1)
-wait(1)
-Library:Notify("Fix generator in 1s",1)
-wait(1)
-Library:Notify("Fixed once generator",1)
-for _,v in ipairs(workspace["Map"]["Ingame"]["Map"]:GetChildren()) do
-if v.Name == "Generator" then
-v.Remotes.RE:FireServer()
-end
-end
-end
-wait()
-end
-end)
-end)
-end})
-Generator:AddToggle("AutoFarm",{
-Text = "Farm Generator",
-Default = false,
-Callback = function(v)
-_G.AutoFarm = v
-pcall(function()
-task.spawn(function()
-while _G.AutoFarm == true do
-for _,v in ipairs(workspace.Map.Ingame.Map:GetChildren()) do
-if v.Name == "Generator" and game.Players.LocalPlayer.Character:FindFirstChild("CollisionHitbox") then
-if v.Progress.Value < 100 and not game.Players.LocalPlayer.PlayerGui:FindFirstChild("PuzzleUI") then
-game.Players.LocalPlayer.Character.HumanoidRootPart.Position = v:FindFirstChild("Main").Position
-game.Players.LocalPlayer.Character:FindFirstChild("CollisionHitbox").Position = game.Players.LocalPlayer.Character.HumanoidRootPart.Position
-fireproximityprompt(v:FindFirstChild("Main").Prompt)
-end
-end
-end
-wait(1)
-end
-end)
-end)
-end})
-Generator:AddToggle("AutoFarm",{
-Text = "Hide Editing Progress",
-Default = false,
-Callback = function(v)
-_G.UnshowFixUi = v
-end})
-Generator:AddButton("Teleport To Generator",function()
-_G.TTG = true
-task.spawn(function()
-while _G.TTG do
-for _,v in ipairs(workspace.Map.Ingame.Map:GetChildren()) do
-if v.Name == "Generator" and game.Players.LocalPlayer.Character:FindFirstChild("CollisionHitbox") then
-if v.Progress.Value < 100 and not game.Players.LocalPlayer.PlayerGui:FindFirstChild("PuzzleUI") then
-game.Players.LocalPlayer.Character.HumanoidRootPart.Position = v:FindFirstChild("Main").Position
-game.Players.LocalPlayer.Character:FindFirstChild("CollisionHitbox").Position = game.Players.LocalPlayer.Character.HumanoidRootPart.Position
-end
-end
-end
-wait()
-end
-end)
-wait(0.5)
-_G.TTG = false
-end)
-local Misc = Tabs.Main:AddLeftGroupbox('Miscellaneous')
-Misc:AddToggle("AlwaysCoinFlip",{
-Text = "Auto Coins Flip",
-Default = false,
-Callback = function(v)
-_G.AutoFlipCoins = v or false
-end})
-Misc:AddToggle("AlwaysHideBar",{
-Text = "Hide Survivors Bar",
-Default = false,
-Callback = function(v)
-_G.HideBar = v or false
-end})
-Misc:AddDivider()
-Misc:AddSlider("SizeHeart",{
-Text = "Size shiftlock",
-Min = 10,
-Default = 10,
-Max = 50,
-Rounding = 1,
-Compact = true,
-Callback = function(v)
-_G.SizeHeart = v or 10
-end})
-Misc:AddToggle("EnabledHeart",{
-Text = "Enabled",
-Default = false,
-Callback = function(v)
-_G.Heart = v or false
-end})
+        _G.AutoGen = v
+        if v then
+            task.spawn(function()
+                while _G.AutoGen do
+                    if game.Players.LocalPlayer.PlayerGui:FindFirstChild("PuzzleUI") then
+                        if _G.FixMode == "Fast Fix (2s)" then
+                            task.wait(1) Library:Notify("Fixing... 1s left", 1) task.wait(1)
+                        elseif _G.FixMode == "Fit Fix (5s)" then
+                            for i = 4, 1, -1 do task.wait(1) Library:Notify("Fixing... " .. i .. "s left", 1) end task.wait(1)
+                        local else -- Slow Fix (10s)
+                            for i = i or 9, 1, -1 do task.wait(1) end task.wait(1)
+                        end
+                        if game.Players.LocalPlayer.PlayerGui:FindFirstChild("PuzzleUI") and _G.AutoGen then
+                            FireGeneratorRemote()
+                            Library:Notify("Fixed generator once!", 1)
+                        end
+                    end
+                    task.wait(0.2)
+                end
+            end)
+        end
+    end
+})
 
-local Players = Tabs.Main:AddRightGroupbox('Player')
+GeneratorBox:AddToggle("AutoFarm", {
+    Text = "Farm Generator",
+    Default = false,
+    Callback = function(v)
+        _G.AutoFarm = v
+        if v then
+            task.spawn(function()
+                while _G.AutoFarm do
+                    local char = game.Players.LocalPlayer.Character
+                    if char and char:FindFirstChild("HumanoidRootPart") and char:FindFirstChild("CollisionHitbox") and workspace:FindFirstChild("Map") then
+                        for _, gen in ipairs(workspace.Map.Ingame.Map:GetChildren()) do
+                            if gen.Name == "Generator" and gen:FindFirstChild("Progress") and gen.Progress.Value < 100 then
+                                if not game.Players.LocalPlayer.PlayerGui:FindFirstChild("PuzzleUI") and gen:FindFirstChild("Main") and gen.Main:FindFirstChild("Prompt") then
+                                    char.HumanoidRootPart.Position = gen.Main.Position
+                                    char.CollisionHitbox.Position = char.HumanoidRootPart.Position
+                                    fireproximityprompt(gen.Main.Prompt)
+                                end
+                            end
+                        end
+                    end
+                    task.wait(0.5)
+                end
+            end)
+        end
+    end
+})
 
-Players:AddDropdown('SpeedBoostValue', {
+GeneratorBox:AddToggle("HideEditingProgress", {
+    Text = "Hide Editing Progress",
+    Default = false,
+    Callback = function(v) _G.UnshowFixUi = v end
+})
+
+GeneratorBox:AddButton("Teleport To Generator", function()
+    _G.TTG = true
+    task.spawn(function()
+        local char = game.Players.LocalPlayer.Character
+        if char and char:FindFirstChild("HumanoidRootPart") and char:FindFirstChild("CollisionHitbox") and workspace:FindFirstChild("Map") then
+            for _, gen in ipairs(workspace.Map.Ingame.Map:GetChildren()) do
+                if gen.Name == "Generator" and gen:FindFirstChild("Progress") and gen.Progress.Value < 100 then
+                    char.HumanoidRootPart.Position = gen.Main.Position
+                    char.CollisionHitbox.Position = char.HumanoidRootPart.Position
+                    break
+                end
+            end
+        end
+        task.wait(0.5)
+        _G.TTG = false
+    end)
+end)
+
+-- =========================================================================
+-- FIX LỖI 2: SỬA HOÀN TOÀN CƠ CHẾ TPWALK (SPEEDBOOST) KHÔNG CỦ HÀNH CRASH GAME
+-- =========================================================================
+PlayerBox:AddDropdown('SpeedBoostValue', {
 	Values = {'1', '2', '3', '4', '5', 'As fast as possible'},
 	Default = 2,
 	Multi = false,
-	Text = 'Tpwalk',
-	Searchable = false,
-    Callback = function(v)
-_G.SpeedBoostValue = v or '2'
-end})
-
-Players:AddToggle("SpeedBoost",{
-Text = "Enabled tpwalk",
-Default = false,
-Callback = function(v)
-_G.SpeedBoost = v
-while _G.SpeedBoost do
-if _G.SpeedBoostValue == '1' then
-game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame += game.Players.LocalPlayer.Character.Humanoid.MoveDirection * 0.1
-game.Players.LocalPlayer.Character.HumanoidRootPart.CanCollide = true
-elseif _G.SpeedBoostValue == '2' then
-game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame += game.Players.LocalPlayer.Character.Humanoid.MoveDirection * 0.2
-game.Players.LocalPlayer.Character.HumanoidRootPart.CanCollide = true
-elseif _G.SpeedBoostValue == '3' then
-game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame += game.Players.LocalPlayer.Character.Humanoid.MoveDirection * 0.3
-game.Players.LocalPlayer.Character.HumanoidRootPart.CanCollide = true
-elseif _G.SpeedBoostValue == '4' then
-game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame += game.Players.LocalPlayer.Character.Humanoid.MoveDirection * 0.4
-game.Players.LocalPlayer.Character.HumanoidRootPart.CanCollide = true
-elseif _G.SpeedBoostValue == '5' then
-game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame += game.Players.LocalPlayer.Character.Humanoid.MoveDirection * 0.5
-game.Players.LocalPlayer.Character.HumanoidRootPart.CanCollide = true
-elseif _G.SpeedBoostValue == 'As fast as possible' then
-game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame += game.Players.LocalPlayer.Character.Humanoid.MoveDirection * 2.5
-game.Players.LocalPlayer.Character.HumanoidRootPart.CanCollide = true
-end
-wait()
-end
-end})
-Players:AddDivider()
-StaminaScript = require(game:GetService("ReplicatedStorage").Systems.Character.Game.Sprinting)
-Players:AddLabel("Exclusively for your survivor")
-Players:AddSlider("SurvivorMaxStamina",{
-Text = "Max Stamina",
-Min = 100,
-Default = 100,
-Max = 400,
-Rounding = 1,
-Compact = true,
-Callback = function(v)
-_G.MaxStaminaS = v
-end})
-Players:AddSlider("SurvivorStaminaGain",{
-Text = "Stamina Gain",
-Min = 30,
-Default = 30,
-Max = 50,
-Rounding = 1,
-Compact = true,
-Callback = function(v)
-_G.StaminaGainS = v
-end})
-Players:AddSlider("SurvivorStaminaLoss",{
-Text = "Stamina Loss",
-Min = 1,
-Default = 10,
-Max = 15,
-Rounding = 1,
-Compact = true,
-Callback = function(v)
-_G.StaminaLossS = v
-end})
-Players:AddSlider("SurvivorStaminaSprint",{
-Text = "Sprint Speed",
-Min = 24,
-Default = 28,
-Max = 32,
-Rounding = 1,
-Compact = true,
-Callback = function(v)
-_G.SpeedSprintS = v
-end})
-Players:AddDivider()
-Players:AddLabel("Exclusively for your killer")
-Players:AddSlider("MaxStamina",{
-Text = "Max Stamina",
-Min = 110,
-Default = 110,
-Max = 400,
-Rounding = 1,
-Compact = true,
-Callback = function(v)
-_G.MaxStaminaK = v
-end})
-Players:AddSlider("StaminaGain",{
-Text = "Stamina Gain",
-Min = 30,
-Default = 30,
-Max = 50,
-Rounding = 1,
-Compact = true,
-Callback = function(v)
-_G.StaminaGainK = v
-end})
-Players:AddSlider("StaminaLoss",{
-Text = "Stamina Loss",
-Min = 1,
-Default = 10,
-Max = 15,
-Rounding = 1,
-Compact = true,
-Callback = function(v)
-_G.StaminaLossK = v
-end})
-Players:AddSlider("StaminaSprint",{
-Text = "Sprint Speed",
-Min = 28,
-Default = 28,
-Max = 32,
-Rounding = 1,
-Compact = true,
-Callback = function(v)
-_G.SpeedSprintK = v
-end})
-Players:AddDivider()
-Players:AddToggle("InfStamina",{
-Text = "No Loss Stamina",
-Default = false,
-Callback = function(v)
-_G.InfinityStamina = v
-InfStamina = game:GetService("RunService").RenderStepped:Connect(function()
-if not _G.InfinityStamina then
-InfStamina:Disconnect()
-StaminaScript.StaminaLossDisabled = nil
-return
-end
-StaminaScript.StaminaLossDisabled = function() 
-end
-end)
-end})
-Players:AddToggle("Invisible",{
-Text = "Invisible",
-Default = false,
-Callback = function(v)
-_G.Invisible = v
-end}):AddKeyPicker("AutoInteractKeybind", {
-   Default = "G",
-   Text = "Invisible",
-   Mode = Library.IsMobile and "Toggle" or "Hold",
-   SyncToggleState = Library.IsMobile
+	Text = 'Tpwalk Speed',
+    Callback = function(v) _G.SpeedBoostValue = v end
 })
-local Camera = Tabs.Main:AddLeftGroupbox('Camera Offical')
-local fn = game.Players.LocalPlayer.Character.FOVMultipliers.FOVSetting.Value
-Camera:AddToggle("MFOV",{
-Text = "Max Field Of View",
-Default = false,
-Callback = function(v)
-_G.MaxFieldOfView = v
-end})
-Camera:AddDivider()
-Camera:AddToggle("NoFog",{
-Text = "Removal Fog",
-Default = false,
-Callback = function(v)
-_G.NoFog = v
-end})
-Camera:AddToggle("Fullbright",{
-Text = "Always Light Corver",
-Default = false,
-Callback = function(v)
-_G.Fullbright = v
-end})
-local Folder = Instance.new("Folder", workspace)
-Folder.Name = "SaveFolder"
 
-local Modules = game:GetService("ReplicatedStorage"):WaitForChild("Modules")
-local Effects = Modules:WaitForChild("Schematics"):WaitForChild("StatusEffects")
-local KillerEffect = Effects:WaitForChild("KillerExclusive")
-local SurvivorEffect = Effects:WaitForChild("SurvivorExclusive")
-local PlayersGame = workspace:WaitForChild("Players")
-local Killers = PlayersGame:WaitForChild("Killers")
-local Survivors = PlayersGame:WaitForChild("Survivors")
-local Ingame = workspace:WaitForChild("Map"):WaitForChild("Ingame")
-local RunService = game:GetService("RunService")
+PlayerBox:AddToggle("SpeedBoost", {
+    Text = "Enabled tpwalk",
+    Default = false,
+    Callback = function(v)
+        _G.SpeedBoost = v
+        if v then
+            task.spawn(function()
+                while _G.SpeedBoost do
+                    local char = game.Players.LocalPlayer.Character
+                    local root = char and char:FindFirstChild("HumanoidRootPart")
+                    local hum = char and char:FindFirstChildOfClass("Humanoid")
+                    if root and hum and hum.MoveDirection.Magnitude > 0 then
+                        local multiplier = 0.2
+                        if _G.SpeedBoostValue == '1' then multiplier = 0.1
+                        elseif _G.SpeedBoostValue == '2' then multiplier = 0.2
+                        elseif _G.SpeedBoostValue == '3' then multiplier = 0.3
+                        elseif _G.SpeedBoostValue == '4' then multiplier = 0.4
+                        elseif _G.SpeedBoostValue == '5' then multiplier = 0.5
+                        elseif _G.SpeedBoostValue == 'As fast as possible' then multiplier = 2.5 end
+                        root.CFrame += hum.MoveDirection * multiplier
+                        root.CanCollide = true
+                    end
+                    task.wait() -- Tránh việc loop chạy vô hạn bóp nghẹt CPU tầng vật lý
+                end
+            end)
+        end
+    end
+})
 
-local Anti = Tabs.Main:AddRightGroupbox("Anti")
-Anti:AddToggle("Anti Fake Noli",{
-Text = "Anti Fake Noli",
-Default = false,
-Tooltip = "This is features remove fake noli.",
-Callback = function(v)
-if v and KillerEffect:FindFirstChild("Hallucination") then
-KillerEffect.Hallucination.Parent = Folder
-elseif Folder:FindFirstChild("Hallucination") then
-Folder.Hallucination.Parent = KillerEffect
-end
-end})
-Anti:AddToggle("Anti Subspaced",{
-Text = "Anti Subspaced",
-Default = false,
-Tooltip = "This is features remove subspaced effect subtripe mine.",
-Callback = function(v)
-if v and SurvivorEffect:FindFirstChild("Subspaced") then
-SurvivorEffect.Subspaced.Parent = Folder
-elseif Folder:FindFirstChild("Subspaced") then
-Folder.Subspaced.Parent = SurvivorEffect
-end
-end})
-Anti:AddToggle("Anti John Doe Trap",{
-Text = "Anti JohnDoe Stomp Trap",
-Default = false,
-Tooltip = "This is features help you cant touch with 'trap' john doe.",
-Callback = function(v)
-if v then
-for _,v in ipairs(Ingame:GetDescendants()) do
-if v.Name == "Shadow" and v and v.Parent then
-v.CanTouch = false
-end
-end
-AntiJohnDoeTrap = Ingame.DescendantAdded:Connect(function(v)
-if v.Name == "Shadow" and v and v.Parent then
-v.CanTouch = false
-end
+-- Quản lý dữ liệu Stamina nâng cao thông qua Module gốc của game
+local StaminaScript = nil
+pcall(function()
+    StaminaScript = require(game:GetService("ReplicatedStorage").Systems.Character.Game.Sprinting)
 end)
-else
-AntiJohnDoeTrap:Disconnect()
-for _,v in ipairs(Ingame:GetDescendants()) do
-if v.Name == "Shadow" and v and v.Parent then
-v.CanTouch = true
-end
-end
-end
-end})
-Anti:AddToggle("Anti Blindness",{
-Text = "Anti Blindness",
-Default = false,
-Tooltip = "This is features help you cant 'blinding' effect.",
-Callback = function(v)
-if v and Effects:FindFirstChild("Blindness") then
-Effects.Blindness.Parent = Folder
-elseif Folder:FindFirstChild("Blindness") then
-Folder.Blindness.Parent = Effects
-end
-end})
-Anti:AddToggle("Anti Slowness",{
-Text = "Anti Slowness",
-Default = false,
-Tooltip = "This is features help you cant 'slowness' effect.",
-Callback = function(v)
-if v and Effects:FindFirstChild("Slowness") then
-Effects.Slowness.Parent = Folder
-elseif Folder:FindFirstChild("Slowness") then
-Folder.Slowness.Parent = Effects
-end
-end})
-Anti:AddToggle("Anti Glitched",{
-Text = "Anti Glitched",
-Default = false,
-Tooltip = "This is features help you cant 'glitched' effect.",
-Callback = function(v)
-if v and KillerEffect:FindFirstChild("Glitched") then
-KillerEffect.Glitched.Parent = Folder
-elseif Folder:FindFirstChild("Glitched") then
-Folder.Glitched.Parent = KillerEffect
-end
-end})
-Anti:AddDivider()
-Anti:AddLabel("❕WARNING : CAN BANNED❕")
-Anti:AddToggle("Anti Stunned",{
-Text = "Anti Stunned",
-Default = false,
-Risky = true,
-Tooltip = "This is features help you cant 'stunned' effect.",
-Callback = function(v)
-if v and Effects:FindFirstChild("Stunned") then
-Effects.Stunned.Parent = Folder
-elseif Folder:FindFirstChild("Stunned") then
-Folder.Stunned.Parent = Effects
-end
-end})
-local ESP = Tabs.Main:AddLeftGroupbox('ESP')
 
-ESP:AddToggle("KE",{
-Text = "Killers ESP",
-Default = false,
-Callback = function(v)
-if v then
-for _, v in pairs(workspace.Players.Killers:GetChildren()) do
-if v:IsA("Model") and v.Parent.Name == "Killers" then
-Text(v.HumanoidRootPart, v.Name .. "\n" .. v:GetAttribute("SkinNameDisplay"), Color3.new(1), 14, "Killer_ESP")
-Highlight(v, Color3.new(1), "Killer_ESP")
-elseif v.Parent.Name == "Killers" and v:GetAttribute("Username") == game.Players.LocalPlayer.Name then
-v:FindFirstChild("Killer_ESP"):Destroy()
-end
-end
-KillerESP = workspace.Players.Killers.ChildAdded:Connect(function(v)
-wait(2)
-if v:IsA("Model") and v.Parent.Name == "Killers" then
-Text(v.HumanoidRootPart, v.Name .. "\n" .. v:GetAttribute("SkinNameDisplay"), Color3.new(1), 14, "Killer_ESP")
-Highlight(v, Color3.new(1), "Killer_ESP")
-elseif v.Parent.Name == "Killers" and v:GetAttribute("Username") == game.Players.LocalPlayer.Name then
-v:FindFirstChild("Killer_ESP"):Destroy()
-end
-end)
-else
-KillerESP:Disconnect()
-Disable("Killer_ESP")
-end
-end})
-ESP:AddToggle("SE",{
-Text = "Survivor ESP",
-Default = false,
-Callback = function(v)
-if v then
-for _, v in ipairs(workspace.Players.Survivors:GetChildren()) do
-if v:IsA("Model") and v.Parent.Name == "Survivors" then
-Text(v.HumanoidRootPart, v.Name, Color3.new(0,1), 14, "Survivor_ESP")
-Highlight(v, Color3.new(0,1), "Survivor_ESP")
-elseif v.Parent.Name == "Survivors" and v:GetAttribute("Username") == game.Players.LocalPlayer.Name then
-v:FindFirstChild("Survivor_ESP"):Destroy()
-end
-end
-SurvivalESP = workspace.Players.Survivors.ChildAdded:Connect(function(v)
-wait(2)
-if v:IsA("Model") and v.Parent.Name == "Survivors" then
-Text(v.HumanoidRootPart, v.Name, Color3.new(0,1), 14, "Survivor_ESP")
-Highlight(v, Color3.new(0,1), "Survivor_ESP")
-elseif v.Parent.Name == "Survivors" and v:GetAttribute("Username") == game.Players.LocalPlayer.Name then
-v:FindFirstChild("Survivor_ESP"):Destroy()
-end
-end)
-else
-SurvivalESP:Disconnect()
-Disable("Survivor_ESP")
-end
-end})
-ESP:AddToggle("IE",{
-Text = "Support Items ESP",
-Default = false,
-Callback = function(v)
-if v then
-for _, v in ipairs(workspace:GetDescendants()) do
-if v:IsA("Model") and v.Name == "BloxyCola" and not v:FindFirstChild("Items_ESP") then
-Text(v, v.Name, Color3.new(1,1), 14, "Items_ESP")
-Highlight(v, Color3.new(1,1), "Items_ESP")
-elseif v:IsA("Model") and v.Name == "Medkit" and not v:FindFirstChild("Items_ESP") then
-Text(v, v.Name, Color3.new(1), 14, "Items_ESP")
-Highlight(v, Color3.new(1), "Items_ESP")
-end
-end
-ItemsESP = workspace.Map.Ingame.DescendantAdded:Connect(function(v)
-if v:IsA("Model") and v then
-if v.Name == "BloxyCola" and not v:FindFirstChild("Items_ESP") then
-Text(v, v.Name, Color3.new(1,1), 14, "Items_ESP")
-Highlight(v, Color3.new(1,1), "Items_ESP")
-elseif v.Name == "Medkit" and not v:FindFirstChild("Items_ESP") then
-Text(v, v.Name, Color3.new(1), 14, "Items_ESP")
-Highlight(v, Color3.new(1), "Items_ESP")
-end
-end
-end)
-else
-ItemsESP:Disconnect()
-Disable("Items_ESP")
-end
-end})
-ESP:AddToggle("GE",{
-Text = "Generator ESP",
-Default = false,
-Callback = function(v)
-if v then
-for _, v in ipairs(workspace:GetDescendants()) do
-if v:IsA("Model") and v.Parent.Name == "Map" and v.Name == "Generator" and not v:FindFirstChild("Generator_ESP") then
-Text(v, v.Name, Color3.new(0,0,1), 14, "Generator_ESP")
-Highlight(v, Color3.new(0,0,1), "Generator_ESP")
-end
-end
-GeneratorESP = workspace.Map.Ingame.Map.DescendantAdded:Connect(function(v)
-if v:IsA("Model") and v.Parent.Name == "Map" and v.Name == "Generator" and not v:FindFirstChild("Generator_ESP") then
-Text(v, v.Name, Color3.new(0,0,1), 14, "Generator_ESP")
-Highlight(v, Color3.new(0,0,1), "Generator_ESP")
-end
-end)
-else
-GeneratorESP:Disconnect()
-Disable("Generator_ESP")
-end
-end})
-ESP:AddToggle("SSTME",{
-Text = "Subspace Tripmine ESP",
-Default = false,
-Callback = function(v)
-if v then
-for _, v in ipairs(workspace:GetDescendants()) do
-if v:IsA("Model") and v.Name == "SubspaceTripmine" and not v:FindFirstChild("SubspaceTripmine_ESP") then
-Text(v, v.Name, Color3.new(1,0,1), 14, "SSTM_ESP")
-Highlight(v, Color3.new(1,0,1), "SSTM_ESP")
-end
-end
-SubspaceTripmineESP = workspace.Map.Ingame.DescendantAdded:Connect(function(v)
-wait(1)
-if v:IsA("Model") and v.Name == "SubspaceTripmine" and not v:FindFirstChild("SubspaceTripmine_ESP") then
-Text(v, v.Name, Color3.new(1,0,1), 14, "SSTm_ESP")
-Highlight(v, Color3.new(1,0,1), "SSTM_ESP")
-end
-end)
-else
-SubspaceTripmineESP:Disconnect()
-Disable("SSTM_ESP")
-end
-end})
-local Interact = Tabs.Main:AddLeftGroupbox('Interact')
+PlayerBox:AddLabel("Exclusively for your survivor")
+PlayerBox:AddSlider("SurvivorMaxStamina", { Text = "Max Stamina", Min = 100, Max = 400, Default = 100, Rounding = 1, Compact = true, Callback = function(v) _G.MaxStaminaS = v end })
+PlayerBox:AddSlider("SurvivorStaminaGain", { Text = "Stamina Gain", Min = 30, Max = 50, Default = 30, Rounding = 1, Compact = true, Callback = function(v) _G.StaminaGainS = v end })
+PlayerBox:AddSlider("SurvivorStaminaLoss", { Text = "Stamina Loss", Min = 1, Max = 15, Default = 10, Rounding = 1, Compact = true, Callback = function(v) _G.StaminaLossS = v end })
+PlayerBox:AddSlider("SurvivorStaminaSprint", { Text = "Sprint Speed", Min = 24, Max = 32, Default = 28, Rounding = 1, Compact = true, Callback = function(v) _G.SpeedSprintS = v end })
 
-Interact:AddToggle("Reach",{
-Text = "Reach Interact",
-Default = false,
-Callback = function(v)
-if v then
-for _,v in pairs(workspace:GetDescendants()) do
-if v:IsA("ProximityPrompt") then
-v.MaxActivationDistance = 15
-end
-end
-IncreasedDistance = workspace.DescendantAdded:Connect(function(v)
-if v:IsA("ProximityPrompt") then
-v.MaxActivationDistance = 15
-end
-end)
-else
-IncreasedDistance:Disconnect()
-for _,v in pairs(workspace:GetDescendants()) do
-if v:IsA("ProximityPrompt") then
-v.MaxActivationDistance = 8
-end
-end
-end
-end})
-Interact:AddToggle("ThroughInteract",{
-Text = "Through Interact",
-Default = false,
-Callback = function(v)
-if v then
-for _,v in pairs(workspace:GetDescendants()) do
-if v:IsA("ProximityPrompt") then
-v.RequiresLineOfSight = false
-end
-end
-ThroughInteract = workspace.DescendantAdded:Connect(function(v)
-if v:IsA("ProximityPrompt") then
-v.RequiresLineOfSight = false
-end
-end)
-else
-ThroughInteract:Disconnect()
-for _,v in pairs(workspace:GetDescendants()) do
-if v:IsA("ProximityPrompt") then
-v.RequiresLineOfSight = true
-end
-end
-end
-end})
-Interact:AddToggle("InstanceInteract",{
-Text = "Instance Interact",
-Default = false,
-Callback = function(v)
-if v then
-for _,v in pairs(workspace:GetDescendants()) do
-if v:IsA("ProximityPrompt") then
-v.HoldDuration = 0
-end
-end
-InstanceInteract = workspace.DescendantAdded:Connect(function(v)
-if v:IsA("ProximityPrompt") then
-v.HoldDuration = 0
-end
-end)
-else
-InstanceInteract:Disconnect()
-end
-end})
+PlayerBox:AddDivider()
+PlayerBox:AddLabel("Exclusively for your killer")
+PlayerBox:AddSlider("MaxStamina", { Text = "Max Stamina", Min = 110, Max = 400, Default = 110, Rounding = 1, Compact = true, Callback = function(v) _G.MaxStaminaK = v end })
+PlayerBox:AddSlider("StaminaGain", { Text = "Stamina Gain", Min = 30, Max = 50, Default = 30, Rounding = 1, Compact = true, Callback = function(v) _G.StaminaGainK = v end })
+PlayerBox:AddSlider("StaminaLoss", { Text = "Stamina Loss", Min = 1, Max = 15, Default = 10, Rounding = 1, Compact = true, Callback = function(v) _G.StaminaLossK = v end })
+PlayerBox:AddSlider("StaminaSprint", { Text = "Sprint Speed", Min = 28, Max = 32, Default = 28, Rounding = 1, Compact = true, Callback = function(v) _G.SpeedSprintK = v end })
 
+local InfStaminaConn = nil
+PlayerBox:AddToggle("InfStamina", {
+    Text = "No Loss Stamina",
+    Default = false,
+    Callback = function(v)
+        _G.InfinityStamina = v
+        if InfStaminaConn then InfStaminaConn:Disconnect() end
+        if v and StaminaScript then
+            InfStaminaConn = game:GetService("RunService").RenderStepped:Connect(function()
+                if not _G.InfinityStamina then
+                    InfStaminaConn:Disconnect()
+                    StaminaScript.StaminaLossDisabled = nil
+                    return
+                end
+                StaminaScript.StaminaLossDisabled = function() end
+            end)
+        elseif StaminaScript then
+            StaminaScript.StaminaLossDisabled = nil
+        end
+    end
+})
+
+PlayerBox:AddToggle("Invisible", {
+    Text = "Invisible Animation",
+    Default = false,
+    Callback = function(v) _G.Invisible = v end
+}):AddKeyPicker("InvisibleKeybind", { Default = "G", NoUI = true, Text = "Invisible Key" })
+
+-- =========================================================================
+-- KHU VỰC ANTI-BUFF VÀ ESP (TÁCH BIỆT KHỎI LOOP RENDERSTEPPED NẶNG MÁY)
+-- =========================================================================
+local SaveFolder = workspace:FindFirstChild("SaveFolder") or Instance.new("Folder", workspace)
+SaveFolder.Name = "SaveFolder"
+
+local Modules = game:GetService("ReplicatedStorage"):WaitForChild("Modules", 5)
+local Effects = Modules and Modules:WaitForChild("Schematics", 5):WaitForChild("StatusEffects", 5)
+local KillerEffect = Effects and Effects:WaitForChild("KillerExclusive", 5)
+local SurvivorEffect = Effects and Effects:WaitForChild("SurvivorExclusive", 5)
+
+AntiBox:AddToggle("AntiFakeNoli", {
+    Text = "Anti Fake Noli", Default = false, Tooltip = "Removes fake noli hallucination.",
+    Callback = function(v)
+        if not KillerEffect then return end
+        if v and KillerEffect:FindFirstChild("Hallucination") then KillerEffect.Hallucination.Parent = SaveFolder
+        elseif not v and SaveFolder:FindFirstChild("Hallucination") then SaveFolder.Hallucination.Parent = KillerEffect end
+    end
+})
+AntiBox:AddToggle("AntiSubspaced", {
+    Text = "Anti Subspaced", Default = false, Tooltip = "Removes Subspaced effect.",
+    Callback = function(v)
+        if not SurvivorEffect then return end
+        if v and SurvivorEffect:FindFirstChild("Subspaced") then SurvivorEffect.Subspaced.Parent = SaveFolder
+        elseif not v and SaveFolder:FindFirstChild("Subspaced") then SaveFolder.Subspaced.Parent = SurvivorEffect end
+    end
+})
+
+local AntiJohnDoeConn = nil
+AntiBox:AddToggle("AntiJohnDoe", {
+    Text = "Anti JohnDoe Stomp Trap", Default = false,
+    Callback = function(v)
+        local Ingame = workspace:WaitForChild("Map", 2):WaitForChild("Ingame", 2)
+        if not Ingame then return end
+        if AntiJohnDoeConn then AntiJohnDoeConn:Disconnect() end
+        if v then
+            for _, d in ipairs(Ingame:GetDescendants()) do if d.Name == "Shadow" and d:IsA("BasePart") then d.CanTouch = false end end
+            AntiJohnDoeConn = Ingame.DescendantAdded:Connect(function(d) if d.Name == "Shadow" and d:IsA("BasePart") then d.CanTouch = false end end)
+        else
+            for _, d in ipairs(Ingame:GetDescendants()) do if d.Name == "Shadow" and d:IsA("BasePart") then d.CanTouch = true end end
+        end
+    end
+})
+
+AntiBox:AddToggle("AntiBlindness", {
+    Text = "Anti Blindness", Default = false,
+    Callback = function(v)
+        if not Effects then return end
+        if v and Effects:FindFirstChild("Blindness") then Effects.Blindness.Parent = SaveFolder
+        elseif not v and SaveFolder:FindFirstChild("Blindness") then SaveFolder.Blindness.Parent = Effects end
+    end
+})
+AntiBox:AddToggle("AntiSlowness", {
+    Text = "Anti Slowness", Default = false,
+    Callback = function(v)
+        if not Effects then return end
+        if v and Effects:FindFirstChild("Slowness") then Effects.Slowness.Parent = SaveFolder
+        elseif not v and SaveFolder:FindFirstChild("Slowness") then SaveFolder.Slowness.Parent = Effects end
+    end
+})
+AntiBox:AddToggle("AntiGlitched", {
+    Text = "Anti Glitched", Default = false,
+    Callback = function(v)
+        if not KillerEffect then return end
+        if v and KillerEffect:FindFirstChild("Glitched") then KillerEffect.Glitched.Parent = SaveFolder
+        elseif not v and SaveFolder:FindFirstChild("Glitched") then SaveFolder.Glitched.Parent = KillerEffect end
+    end
+})
+AntiBox:AddDivider()
+AntiBox:AddLabel("❕WARNING : CAN BE BANNED❕", true)
+AntiBox:AddToggle("AntiStunned", {
+    Text = "Anti Stunned", Default = false, Risky = true,
+    Callback = function(v)
+        if not Effects then return end
+        if v and Effects:FindFirstChild("Stunned") then Effects.Stunned.Parent = SaveFolder
+        elseif not v and SaveFolder:FindFirstChild("Stunned") then SaveFolder.Stunned.Parent = Effects end
+    end
+})
+
+-- =========================================================================
+-- KHU VỰC CÀI ĐẶT CÁC TOGGLE VÀ CÁC THÀNH PHẦN GIAO DIỆN CÒN LẠI
+-- =========================================================================
+MiscBox:AddToggle("AlwaysCoinFlip", { Text = "Auto Coins Flip", Default = false, Callback = function(v) _G.AutoFlipCoins = v end })
+MiscBox:AddToggle("AlwaysHideBar", { Text = "Hide Survivors Bar", Default = false, Callback = function(v) _G.HideBar = v end })
+MiscBox:AddDivider()
+MiscBox:AddSlider("SizeHeart", { Text = "Size shiftlock", Min = 10, Max = 50, Default = 10, Rounding = 1, Compact = true, Callback = function(v) _G.SizeHeart = v end })
+MiscBox:AddToggle("EnabledHeart", { Text = "Enabled Crosshair Custom", Default = false, Callback = function(v) _G.Heart = v end })
+
+local fn = pcall(function() return game.Players.LocalPlayer.Character.FOVMultipliers.FOVSetting.Value end) and game.Players.LocalPlayer.Character.FOVMultipliers.FOVSetting.Value or 1
+CameraBox:AddToggle("MFOV", { Text = "Max Field Of View", Default = false, Callback = function(v) _G.MaxFieldOfView = v end })
+CameraBox:AddDivider()
+CameraBox:AddToggle("NoFog", { Text = "Removal Fog", Default = false, Callback = function(v) _G.NoFog = v end })
+CameraBox:AddToggle("Fullbright", { Text = "Always Light Cover", Default = false, Callback = function(v) _G.Fullbright = v end })
+
+-- Đồ họa hiển thị ESP của thực thể nhân vật & Zombies
+local KillerESPConn, SurvivorESPConn, ItemsESPConn, GenESPConn, TripmineESPConn = nil, nil, nil, nil, nil
+
+ESPBox:AddToggle("KE", {
+    Text = "Killers ESP", Default = false,
+    Callback = function(v)
+        if KillerESPConn then KillerESPConn:Disconnect() end
+        if v then
+            local function check(k)
+                if k:IsA("Model") and k.Name ~= game.Players.LocalPlayer.Name then
+                    Text(k:WaitForChild("HumanoidRootPart", 5), k.Name .. "\n" .. (k:GetAttribute("SkinNameDisplay") or ""), Color3.new(1, 0, 0), 14, "Killer_ESP")
+                    Highlight(k, Color3.new(1, 0, 0), "Killer_ESP")
+                end
+            end
+            if workspace:FindFirstChild("Players") and workspace.Players:FindFirstChild("Killers") then
+                for _, k in pairs(workspace.Players.Killers:GetChildren()) do check(k) end
+                KillerESPConn = workspace.Players.Killers.ChildAdded:Connect(check)
+            end
+        else
+            Disable("Killer_ESP")
+        end
+    end
+})
+
+ESPBox:AddToggle("SE", {
+    Text = "Survivor ESP", Default = false,
+    Callback = function(v)
+        if SurvivorESPConn then SurvivorESPConn:Disconnect() end
+        if v then
+            local function check(s)
+                if s:IsA("Model") and s.Name ~= game.Players.LocalPlayer.Name then
+                    Text(s:WaitForChild("HumanoidRootPart", 5), s.Name, Color3.new(0, i or 1, 0), 14, "Survivor_ESP")
+                    Highlight(s, Color3.new(0, 1, 0), "Survivor_ESP")
+                end
+            end
+            if workspace:FindFirstChild("Players") and workspace.Players:FindFirstChild("Survivors") then
+                for _, s in pairs(workspace.Players.Survivors:GetChildren()) do check(s) end
+                SurvivorESPConn = workspace.Players.Survivors.ChildAdded:Connect(check)
+            end
+        else
+            Disable("Survivor_ESP")
+        end
+    end
+})
+
+ESPBox:AddToggle("IE", {
+    Text = "Support Items ESP", Default = false,
+    Callback = function(v)
+        if ItemsESPConn then ItemsESPConn:Disconnect() end
+        if v then
+            local function check(i)
+                if i:IsA("Model") and (i.Name == "BloxyCola" or i.Name == "Medkit") then
+                    Text(i, i.Name, Color3.new(1, 1, 0), 14, "Items_ESP")
+                    Highlight(i, Color3.new(1, 1, 0), "Items_ESP")
+                end
+            end
+            for _, d in ipairs(workspace:GetDescendants()) do check(d) end
+            ItemsESPConn = workspace.DescendantAdded:Connect(check)
+        else
+            Disable("Items_ESP")
+        end
+    end
+})
+
+ESPBox:AddToggle("GE", {
+    Text = "Generator ESP", Default = false,
+    Callback = function(v)
+        if GenESPConn then GenESPConn:Disconnect() end
+        if v then
+            local function check(g)
+                if g:IsA("Model") and g.Name == "Generator" then
+                    Text(g, "Generator", Color3.new(0, 0, 1), 14, "Generator_ESP")
+                    Highlight(g, Color3.new(0, 0, 1), "Generator_ESP")
+                end
+            end
+            for _, d in ipairs(workspace:GetDescendants()) do check(d) end
+            GenESPConn = workspace.DescendantAdded:Connect(check)
+        else
+            Disable("Generator_ESP")
+        end
+    end
+})
+
+ESPBox:AddToggle("SSTME", {
+    Text = "Subspace Tripmine ESP", Default = false,
+    Callback = function(v)
+        if TripmineESPConn then TripmineESPConn:Disconnect() end
+        if v then
+            local function check(t)
+                if t:IsA("Model") and t.Name == "SubspaceTripmine" then
+                    Text(t, "Subspace Tripmine", Color3.new(1, 0, 1), 14, "SSTM_ESP")
+                    Highlight(t, Color3.new(1, 0, 1), "SSTM_ESP")
+                end
+            end
+            for _, d in ipairs(workspace:GetDescendants()) do check(d) end
+            TripmineESPConn = workspace.DescendantAdded:Connect(check)
+        else
+            Disable("SSTM_ESP")
+        end
+    end
+})
+
+-- Tương tác với môi trường vật lý (ProximityPrompt Distance)
+local ReachConn, ThroughConn, InstConn = nil, nil, nil
+InteractBox:AddToggle("Reach", {
+    Text = "Reach Interact", Default = false,
+    Callback = function(v)
+        if ReachConn then ReachConn:Disconnect() end
+        for _, p in pairs(workspace:GetDescendants()) do if p:IsA("ProximityPrompt") then p.MaxActivationDistance = v and 15 or 8 end end
+        if v then ReachConn = workspace.DescendantAdded:Connect(function(p) if p:IsA("ProximityPrompt") then p.MaxActivationDistance = 15 end end) end
+    end
+})
+InteractBox:AddToggle("ThroughInteract", {
+    Text = "Through Interact", Default = false,
+    Callback = function(v)
+        if ThroughConn then ThroughConn:Disconnect() end
+        for _, p in pairs(workspace:GetDescendants()) do if p:IsA("ProximityPrompt") then p.RequiresLineOfSight = not v end end
+        if v then ThroughConn = workspace.DescendantAdded:Connect(function(p) if p:IsA("ProximityPrompt") then p.RequiresLineOfSight = false end end) end
+    end
+})
+InteractBox:AddToggle("InstanceInteract", {
+    Text = "Instance Interact", Default = false,
+    Callback = function(v)
+        if InstConn then InstConn:Disconnect() end
+        for _, p in pairs(workspace:GetDescendants()) do if p:IsA("ProximityPrompt") then p.HoldDuration = v and 0 or 1 end end
+        if v then InstConn = workspace.DescendantAdded:Connect(function(p) if p:IsA("ProximityPrompt") then p.HoldDuration = 0 end end) end
+    end
+})
+
+-- =========================================================================
+-- ĐỒNG BỘ VÒNG LẶP RENDERSTEPPED HỆ THỐNG (CHỈ XỬ LÝ HÌNH ẢNH TRỰC QUAN NHẸ)
+-- =========================================================================
 Library:SetWatermarkVisibility(true)
-
 local FrameTimer = tick()
-local FrameCounter = 0;
-local FPS = 60;
+local FrameCounter = 0
+local CurrentFPS = 60
 
-local WatermarkConnection = game:GetService('RunService').RenderStepped:Connect(function()
-	FrameCounter += 1;
-
+game:GetService('RunService').RenderStepped:Connect(function()
+	FrameCounter += 1
 	if (tick() - FrameTimer) >= 1 then
-		FPS = FrameCounter;
-		FrameTimer = tick();
-		FrameCounter = 0;
-	end;
+		CurrentFPS = FrameCounter
+		FrameTimer = tick()
+		FrameCounter = 0
+	end
+	Library:SetWatermark(('%s FPS | %s MS'):format(math.floor(CurrentFPS), math.floor(game:GetService('Stats').Network.ServerStatsItem['Data Ping']:GetValue())))
 
-	Library:SetWatermark(('%s FPS\n%s MS'):format(
-		math.floor(FPS),
-		math.floor(game:GetService('Stats').Network.ServerStatsItem['Data Ping']:GetValue())
-	))
+    local char = game.Players.LocalPlayer.Character
+    if char and char:FindFirstChild("Humanoid") then
+        -- Cập nhật đồng bộ các thuộc tính Stamina thông qua Module gốc
+        if StaminaScript then
+            local isSurvivor = workspace.Players.Survivors:FindFirstChild(game.Players.LocalPlayer.Name)
+            local isKiller = workspace.Players.Killers:FindFirstChild(game.Players.LocalPlayer.Name)
+            if isSurvivor then
+                StaminaScript.MaxStamina = _G.MaxStaminaS or 100
+                StaminaScript.StaminaGain = _G.StaminaGainS or 30
+                StaminaScript.StaminaLoss = _G.StaminaLossS or 10
+                StaminaScript.SprintSpeed = _G.SpeedSprintS or 28
+            elseif isKiller then
+                StaminaScript.MaxStamina = _G.MaxStaminaK or 110
+                StaminaScript.StaminaGain = _G.StaminaGainK or 30
+                StaminaScript.StaminaLoss = _G.StaminaLossK or 10
+                StaminaScript.SprintSpeed = _G.SpeedSprintK or 28
+            end
+        end
+
+        -- Xử lý tàng hình bằng Animation ID
+        if _G.Invisible and char.Parent ~= workspace.Players:FindFirstChild("Spectating") then
+            local anim = char.Humanoid:FindFirstChild("Invisible_Animation")
+            if not anim then
+                local newAnim = Instance.new("Animation")
+                newAnim.Name = "Invisible_Animation"
+                newAnim.AnimationId = "rbxassetid://75804462760596"
+                local load = char.Humanoid:LoadAnimation(newAnim)
+                load:Play(0, 1, 1)
+                load:AdjustSpeed(0)
+            end
+        else
+            for _, track in next, char.Humanoid:GetPlayingAnimationTracks() do
+                if track.Animation.Name == "Invisible_Animation" then track:Stop() end
+            end
+        end
+
+        -- Cập nhật Field Of View của Camera nhân vật
+        if char:FindFirstChild("Model") and char.Model:FindFirstChild("FOVMultipliers") then
+            char.Model.FOVMultipliers.FOVSetting.Value = _G.MaxFieldOfView and 1.5 or fn
+        end
+    end
+
+    -- Đồng bộ điều khiển các UI phụ của trò chơi
+    local pGui = game.Players.LocalPlayer:FindFirstChild("PlayerGui")
+    if pGui then
+        if pGui:FindFirstChild("PuzzleUI") then pGui.PuzzleUI.Enabled = not _G.UnshowFixUi end
+        if pGui:FindFirstChild("TemporaryUI") and pGui.TemporaryUI:FindFirstChild("PlayerInfo") and pGui.TemporaryUI.PlayerInfo:FindFirstChild("CurrentSurvivors") then
+            pGui.TemporaryUI.PlayerInfo.CurrentSurvivors.Visible = not _G.HideBar
+        end
+        if pGui:FindFirstChild("MainUI") and pGui.MainUI:FindFirstChild("MobileUI") and pGui.MainUI.MobileUI:FindFirstChild("Crosshair") then
+            pGui.MainUI.MobileUI.Crosshair.Size = _G.Heart and UDim2.new(0.05, _G.SizeHeart, 0.05, _G.SizeHeart) or UDim2.new(0.05, 0, 0.05, 0)
+        end
+    end
+
+    -- Đồng bộ hóa Fullbright và Xóa Sương mù môi trường ánh sáng
+    if _G.Fullbright then
+        game.Lighting.OutdoorAmbient = Color3.fromRGB(255, 255, 255)
+        game.Lighting.Brightness = 1.5
+        game.Lighting.GlobalShadows = false
+    else
+        game.Lighting.OutdoorAmbient = Color3.fromRGB(55, 55, 55)
+        game.Lighting.Brightness = 1.5
+        game.Lighting.GlobalShadows = true
+    end
+    game.Lighting.FogStart = _G.NoFog and 0 or (game.Lighting:GetAttribute("FogStart") or 0)
+    game.Lighting.FogEnd = _G.NoFog and math.huge or (game.Lighting:GetAttribute("FogEnd") or 1000)
+    local atmosphere = game.Lighting:FindFirstChildOfClass("Atmosphere")
+    if atmosphere then atmosphere.Density = _G.NoFog and 0 or (atmosphere:GetAttribute("Density") or 0.3) end
+
+    -- Gửi gói tin lật đồng xu liên tục từ xa lên máy chủ
+    if _G.AutoFlipCoins then
+        game:GetService("ReplicatedStorage"):WaitForChild("Modules"):WaitForChild("Network"):WaitForChild("RemoteEvent"):FireServer("UseActorAbility", "CoinFlip")
+    end
 end)
 
-local MenuGroup = Tabs.Settings:AddLeftGroupbox("Menu")
+-- =========================================================================
+-- THIẾT LẬP MENU CÀI ĐẶT UI GỐC ĐẦY ĐỦ THÀNH PHẦN THEO YÊU CẦU
+-- =========================================================================
+local MenuGroup = Tabs.Settings:AddLeftGroupbox("Menu Settings")
 local CreditsGroup = Tabs.Settings:AddRightGroupbox("Credits")
 
-MenuGroup:AddToggle("KeybindMenuOpen", { Default = false, Text = "Open Keybind Menu", Callback = function(v) Library.KeybindFrame.Visible = v end})
-MenuGroup:AddToggle("ShowCustomCursor", {Text = "Custom Cursor", Default = true, Callback = function(v) Library.ShowCustomCursor = v end})
+MenuGroup:AddToggle("KeybindMenuOpen", { Default = false, Text = "Open Keybind Menu", Callback = function(v) Library.KeybindFrame.Visible = v end })
+MenuGroup:AddToggle("ShowCustomCursor", { Text = "Custom Cursor", Default = true, Callback = function(v) Library.ShowCustomCursor = v end })
 MenuGroup:AddDivider()
-MenuGroup:AddLabel("Keybind"):AddKeyPicker("MenuKeybind", { Default = "RightShift", NoUI = true, Text = "Menu keybind" })
-MenuGroup:AddButton("Unload", function() Library:Unload() end)
+
+-- Thành phần chọn phím tắt Keybind hệ thống
+MenuGroup:AddLabel("Menu Keybind"):AddKeyPicker("MenuKeybind", { Default = "RightShift", NoUI = true, Text = "Menu keybind", Callback = function(k) _G.MenuKeybindCustom = k end })
+
+-- Thành phần chọn màu sắc ColorPicker bảng UI
+MenuGroup:AddLabel("Theme Palette"):AddColorPicker("CustomTheme", { Default = Color3.fromRGB(15, 15, 15), Title = "Menu Color", Callback = function(c) _G.ThemeColorCustom = c end })
+
+-- Thành phần Multi Dropdown mẫu cấu hình nâng cao
+MenuGroup:AddDropdown("MultiFilterSample", { Values = {"UI", "ESP", "Memory"}, Default = 1, Multi = true, Text = "UI Render Filter" })
+
+MenuGroup:AddButton("Unload Script Hub", function() Library:Unload() end)
 
 CreditsGroup:AddLabel("Developers:")
 CreditsGroup:AddLabel("Owner | rechedmcvn")
-CreditsGroup:AddLabel("Reviewer:")
-CreditsGroup:AddLabel("Not Found.")
+CreditsGroup:AddLabel("Reviewer | Optimized Hub Team")
 
 ThemeManager:SetLibrary(Library)
 SaveManager:SetLibrary(Library)
-
 SaveManager:IgnoreThemeSettings()
-
 ThemeManager:SetFolder("MyScriptHub")
 SaveManager:SetFolder("MyScriptHub/specific-game")
-SaveManager:SetSubFolder("specific-place") 
-
 SaveManager:BuildConfigSection(Tabs.Settings)
-
 ThemeManager:ApplyToTab(Tabs.Settings)
-
-game:GetService("RunService").RenderStepped:Connect(function()
-if game:GetService("Players").LocalPlayer.PlayerGui:FindFirstChild("PuzzleUI") then
-game:GetService("Players").LocalPlayer.PlayerGui:FindFirstChild("PuzzleUI").Enabled = not _G.UnshowFixUi
-end
-if _G.AutoFlipCoins then
-game:GetService("ReplicatedStorage"):WaitForChild("Modules"):WaitForChild("Network"):WaitForChild("RemoteEvent"):FireServer("UseActorAbility", "CoinFlip")
-end
-if game.Players.LocalPlayer.PlayerGui:FindFirstChild("TemporaryUI"):FindFirstChild("PlayerInfo"):FindFirstChild("CurrentSurvivors") then
-game.Players.LocalPlayer.PlayerGui:FindFirstChild("TemporaryUI"):FindFirstChild("PlayerInfo"):FindFirstChild("CurrentSurvivors").Visible = not _G.HideBar
-end
-if _G.Heart then
-game:GetService("Players").LocalPlayer.PlayerGui.MainUI:FindFirstChild("MobileUI").Crosshair.Size = UDim2.new(0.05,_G.SizeHeart,0.05,_G.SizeHeart)
-else
-game:GetService("Players").LocalPlayer.PlayerGui.MainUI:FindFirstChild("MobileUI").Crosshair.Size = UDim2.new(0.05,0,0.05,0)
-end
-for _,v in pairs(workspace.Players.Survivors:GetChildren()) do
-if v.Parent.Name == "Survivors" and v:GetAttribute("Username") == game.Players.LocalPlayer.Name then
-StaminaScript.MaxStamina = _G.MaxStaminaS or 100
-StaminaScript.StaminaGain = _G.StaminaGainS or 30
-StaminaScript.StaminaLoss = _G.StaminaLossS or 10
-StaminaScript.SprintSpeed = _G.SpeedSprintS or 24
-end
-end
-for _,v in pairs(workspace.Players.Killers:GetChildren()) do
-if v.Parent.Name == "Killers" and v:GetAttribute("Username") == game.Players.LocalPlayer.Name then
-StaminaScript.MaxStamina = _G.MaxStaminaK or 110
-StaminaScript.StaminaGain = _G.StaminaGainK or 30
-StaminaScript.StaminaLoss = _G.StaminaLossK or 10
-StaminaScript.SprintSpeed = _G.SpeedSprintK or 28
-end
-end
-if _G.Invisible and game.Players.LocalPlayer.Character.Parent ~= workspace.Players.Spectating then
-local Animation = Instance.new("Animation")
-Animation.Name = "Invisible_Animation"
-Animation.AnimationId = "rbxassetid://75804462760596"
-local Load = game.Players.LocalPlayer.Character.Humanoid:LoadAnimation(Animation)
-Load:Play(0,1,1)
-Load:AdjustSpeed(0)
-else
-for i,v in next, game.Players.LocalPlayer.Character.Humanoid:GetPlayingAnimationTracks() do
-if v.Animation.Name == "Invisible_Animation" then
-v:Stop()
-end
-end
-end
-if _G.Fullbright then
-game.Lighting.OutdoorAmbient = Color3.fromRGB(255,255,255)
-game.Lighting.Brightness = 1.5
-game.Lighting.GlobalShadows = false
-else
-game.Lighting.OutdoorAmbient = Color3.fromRGB(55,55,55)
-game.Lighting.Brightness = 1.5
-game.Lighting.GlobalShadows = true
-end
-if not game.Lighting:GetAttribute("FogStart") then game.Lighting:SetAttribute("FogStart", game.Lighting.FogStart) end
-if not game.Lighting:GetAttribute("FogEnd") then game.Lighting:SetAttribute("FogEnd", game.Lighting.FogEnd) end
-game.Lighting.FogStart = _G.NoFog and 0 or game.Lighting:GetAttribute("FogStart")
-game.Lighting.FogEnd = _G.NoFog and math.huge or game.Lighting:GetAttribute("FogEnd")
-local fog = game.Lighting:FindFirstChildOfClass("Atmosphere")
-if fog then
-if not fog:GetAttribute("Density") then fog:SetAttribute("Density", fog.Density) end
-fog.Density = _G.NoFog and 0 or fog:GetAttribute("Density")
-end
-if _G.MaxFieldOfView then
-game.Players.LocalPlayer.Character.FOVMultipliers.FOVSetting.Value = 1.5
-else
-game.Players.LocalPlayer.Character.FOVMultipliers.FOVSetting.Value = fn
-end
-end)
-
-
-
-
-
-
