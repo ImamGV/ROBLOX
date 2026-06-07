@@ -1059,7 +1059,6 @@ if partlag then
 partlag:Destroy()
 end
 end
-end
 if _G.AutoPickup then
 local Map = workspace.Map.Ingame:FindFirstChild("Map")
 if not Map then return end
