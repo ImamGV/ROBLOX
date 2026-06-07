@@ -421,16 +421,6 @@ Text = "Hitbox Exaggerated M1",
 Default = false,
 Callback = function(v)
 _G.HitboxExaggerated = v
-InfStamina = game:GetService("RunService").RenderStepped:Connect(function()
-if not _G.HitboxExaggerated then
-local closest, dist = getClosestSurvivor()
-if closest then
-game.Players.LocalPlayer.Character:FindFirstChild("CollisionHitbox").Position = closest.HumanoidRootPart.Position
-end
-wait(0.2)
-game.Players.LocalPlayer.Character:FindFirstChild("CollisionHitbox").Position = game.Players.LocalPlayer.Character.HumanoidRootPart.Position
-end
-end)
 end})
 local Camera = Tabs.Main:AddLeftGroupbox('Camera Offical')
 local fn = game.Players.LocalPlayer.Character.FOVMultipliers.FOVSetting.Value
@@ -877,6 +867,18 @@ if _G.MaxFieldOfView then
 game.Players.LocalPlayer.Character.FOVMultipliers.FOVSetting.Value = 1.5
 else
 game.Players.LocalPlayer.Character.FOVMultipliers.FOVSetting.Value = fn
+end
+if not _G.HitboxExaggerated then
+for _,v in pairs(workspace.Players.Killers:GetChildren()) do
+if v.Parent.Name == "Killers" and v:GetAttribute("Username") == game.Players.LocalPlayer.Name then
+local closest, dist = getClosestSurvivor()
+if closest then
+game.Players.LocalPlayer.Character:FindFirstChild("CollisionHitbox").Position = closest.HumanoidRootPart.Position
+end
+wait(0.2)
+game.Players.LocalPlayer.Character:FindFirstChild("CollisionHitbox").Position = game.Players.LocalPlayer.Character.HumanoidRootPart.Position
+end
+end
 end
 end)
 
