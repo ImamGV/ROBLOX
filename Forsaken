@@ -648,10 +648,8 @@ game:GetService("RunService").RenderStepped:Connect(function()
 local Map = workspace.Map.Ingame:FindFirstChild("Map")
 if not Map then return end
 for _, v in ipairs(Map:GetChildren()) do
-if v.Name == "Generators" then
-for _,v2 in ipairs(v:GetChildren()) do
-if v2.Name == "Generator" and not v2:FindFirstChild("Generator_ESP") then
-local Billboard = Instance.new("BillboardGui", v2)
+if v.Name == "Generator" and not v:FindFirstChild("Generator_ESP") then
+local Billboard = Instance.new("BillboardGui", v)
 local TextLabel = Instance.new("TextLabel", Billboard)
 local UIStroke = Instance.new("UIStroke", TextLabel)
 --// Billboard \\
@@ -675,7 +673,7 @@ TextLabel.Position = UDim2.new(0.5,0,0.7,-35)
 UIStroke.Thickness = 1
 UIStroke.Color = Color3.new()
 UIStroke.Transparency = 0
-local Highlight = Instance.new('Highlight', target)
+local Highlight = Instance.new('Highlight', v)
 --// Highlight \\
 Highlight.DepthMode = Enum.HighlightDepthMode.AlwaysOnTop
 Highlight.FillColor = Color3.new(0,0,1)
@@ -684,8 +682,8 @@ Highlight.FillTransparency = 1
 Highlight.OutlineTransparency =  0
 Highlight.Name = "Generator_ESP"
 game:GetService("RunService").RenderStepped:Connect(function()
-TextLabel.Text = "Generator\n" .. v2.Progress.Value .. "%"
-local Progress = v2.Progress
+TextLabel.Text = "Generator\n" .. v.Progress.Value .. "%"
+local Progress = v.Progress
 if Progress.Value < 27 then
 Highlight.FillColor = Color3.new(0,0,1)
 Highlight.OutlineColor = Color3.new(0,0,1)
@@ -704,8 +702,6 @@ Highlight.OutlineColor = Color3.fromRGB(0,255,0)
 TextLabel.TextColor3 = Color3.fromRGB(0,255,0)
 end
 end)
-end
-end
 end
 end
 end)
