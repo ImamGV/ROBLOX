@@ -493,6 +493,13 @@ Folder.Subspaced.Parent = SurvivorEffect
 end
 end})
 Anti:AddToggle("Anti John Doe Trap",{
+Text = "Anti JohnDoe Trail",
+Default = false,
+Tooltip = "This is features help you cant touch with 'trail' john doe.",
+Callback = function(v)
+_G.AntiTrailJohn = v
+end})
+Anti:AddToggle("Anti John Doe Trap",{
 Text = "Anti JohnDoe Stomp Trap",
 Default = false,
 Tooltip = "This is features help you cant touch with 'trap' john doe.",
@@ -538,6 +545,13 @@ Effects.Slowness.Parent = Folder
 elseif Folder:FindFirstChild("Slowness") then
 Folder.Slowness.Parent = Effects
 end
+end})
+Anti:AddToggle("Anti c00lkidd lag",{
+Text = "Anti c00lkidd lag",
+Default = false,
+Tooltip = "This is features help you cant 'reduce lag' c00lkidd.",
+Callback = function(v)
+_G.AntiCoolLag = v
 end})
 Anti:AddDivider()
 Anti:AddLabel("❕WARNING : CAN BANNED❕")
@@ -588,20 +602,120 @@ Default = false,
 Callback = function(v)
 if v then
 for _, v in ipairs(workspace.Players.Survivors:GetChildren()) do
-if v:IsA("Model") and v.Parent.Name == "Survivors" then
-Text(v.HumanoidRootPart, v.Name, Color3.new(0,1), 14, "Survivor_ESP")
-Highlight(v, Color3.new(0,1), "Survivor_ESP")
-elseif v.Parent.Name == "Survivors" and v:GetAttribute("Username") == game.Players.LocalPlayer.Name then
-v:FindFirstChild("Survivor_ESP"):Destroy()
+if v:IsA("Model") and v.Parent.Name == "Survivors" and not v:FindFirstChild("Survivor_ESP") then
+local Billboard = Instance.new("BillboardGui", v)
+local TextLabel = Instance.new("TextLabel", Billboard)
+local UIStroke = Instance.new("UIStroke", TextLabel)
+--// Billboard \\
+Billboard.AlwaysOnTop = true
+Billboard.Size = UDim2.new(0,400,0,100)
+Billboard.Name = "Survivor_ESP"
+Billboard.Active = true
+--// TextLabel \\
+TextLabel.AnchorPoint = Vector2.new(0.5,0.5)
+TextLabel.BackgroundTransparency = 1
+TextLabel.BackgroundColor3 = Color3.new(0,0,0)
+TextLabel.TextColor3 = Color3.new(0,0,1)
+TextLabel.Font = "SourceSansBold"
+TextLabel.TextSize = 14
+TextLabel.TextTransparency = 0
+TextLabel.Visible = true
+TextLabel.Text = "Đạt béo sau khi coi source!:D"
+TextLabel.Size = UDim2.new(1,0,0,0)
+TextLabel.Position = UDim2.new(0.5,0,0.7,-35)
+--// UIStroke \\
+UIStroke.Thickness = 1
+UIStroke.Color = Color3.new()
+UIStroke.Transparency = 0
+local Highlight = Instance.new('Highlight', v)
+--// Highlight \\
+Highlight.DepthMode = Enum.HighlightDepthMode.AlwaysOnTop
+Highlight.FillColor = Color3.new(0,0,1)
+Highlight.OutlineColor = Color3.new(0,0,1)
+Highlight.FillTransparency = 1
+Highlight.OutlineTransparency =  0
+Highlight.Name = "Survivor_ESP"
+game:GetService("RunService").RenderStepped:Connect(function()
+local Humanoid = v:FindFirstChild("Humanoid")
+if not Humanoid then return end
+TextLabel.Text = v:GetAttribute("Username") .. "\n" .. Humanoid.Health .. "/" .. Humanoid.MaxHealth
+if Humanoid.Health > (Humanoid.MaxHealth * 0.75) then
+Highlight.FillColor = Color3.new(0,1,0.2)
+Highlight.OutlineColor = Color3.new(0,1,0.2)
+TextLabel.TextColor3 = Color3.new(0,1,0.2)
+elseif Humanoid.Health > (Humanoid.MaxHealth * 0.5) then
+Highlight.FillColor = Color3.new(0,1,0.5)
+Highlight.OutlineColor = Color3.new(0,1,0.5)
+TextLabel.TextColor3 = Color3.new(0,1,0.5)
+elseif Humanoid.Health > (Humanoid.MaxHealth * 0.25) then
+Highlight.FillColor = Color3.new(1,0,0.8)
+Highlight.OutlineColor = Color3.new(1,0,0.8)
+TextLabel.TextColor3 = Color3.new(1,0,0.8)
+elseif Humanoid.Health < (Humanoid.MaxHealth * 0.25) then
+Highlight.FillColor = Color3.new(1,0.2,0.2)
+Highlight.OutlineColor = Color3.new(1,0.2,0.2)
+TextLabel.TextColor3 = Color3.new(1,0.2,0.2)
+end
+end)
 end
 end
 SurvivalESP = workspace.Players.Survivors.ChildAdded:Connect(function(v)
 wait(2)
-if v:IsA("Model") and v.Parent.Name == "Survivors" then
-Text(v.HumanoidRootPart, v.Name, Color3.new(0,1), 14, "Survivor_ESP")
-Highlight(v, Color3.new(0,1), "Survivor_ESP")
-elseif v.Parent.Name == "Survivors" and v:GetAttribute("Username") == game.Players.LocalPlayer.Name then
-v:FindFirstChild("Survivor_ESP"):Destroy()
+if v:IsA("Model") and v.Parent.Name == "Survivors" and not v:FindFirstChild("Survivor_ESP") then
+local Billboard = Instance.new("BillboardGui", v)
+local TextLabel = Instance.new("TextLabel", Billboard)
+local UIStroke = Instance.new("UIStroke", TextLabel)
+--// Billboard \\
+Billboard.AlwaysOnTop = true
+Billboard.Size = UDim2.new(0,400,0,100)
+Billboard.Name = "Survivor_ESP"
+Billboard.Active = true
+--// TextLabel \\
+TextLabel.AnchorPoint = Vector2.new(0.5,0.5)
+TextLabel.BackgroundTransparency = 1
+TextLabel.BackgroundColor3 = Color3.new(0,0,0)
+TextLabel.TextColor3 = Color3.new(0,0,1)
+TextLabel.Font = "SourceSansBold"
+TextLabel.TextSize = 14
+TextLabel.TextTransparency = 0
+TextLabel.Visible = true
+TextLabel.Text = "Đạt béo sau khi coi source!:D"
+TextLabel.Size = UDim2.new(1,0,0,0)
+TextLabel.Position = UDim2.new(0.5,0,0.7,-35)
+--// UIStroke \\
+UIStroke.Thickness = 1
+UIStroke.Color = Color3.new()
+UIStroke.Transparency = 0
+local Highlight = Instance.new('Highlight', v)
+--// Highlight \\
+Highlight.DepthMode = Enum.HighlightDepthMode.AlwaysOnTop
+Highlight.FillColor = Color3.new(0,0,1)
+Highlight.OutlineColor = Color3.new(0,0,1)
+Highlight.FillTransparency = 1
+Highlight.OutlineTransparency =  0
+Highlight.Name = "Survivor_ESP"
+game:GetService("RunService").RenderStepped:Connect(function()
+local Humanoid = v:FindFirstChild("Humanoid")
+if not Humanoid then return end
+TextLabel.Text = v:GetAttribute("Username") .. "\n" .. Humanoid.Health .. "/" .. Humanoid.MaxHealth
+if Humanoid.Health > (Humanoid.MaxHealth * 0.75) then
+Highlight.FillColor = Color3.new(0,1,0.2)
+Highlight.OutlineColor = Color3.new(0,1,0.2)
+TextLabel.TextColor3 = Color3.new(0,1,0.2)
+elseif Humanoid.Health > (Humanoid.MaxHealth * 0.5) then
+Highlight.FillColor = Color3.new(0,1,0.5)
+Highlight.OutlineColor = Color3.new(0,1,0.5)
+TextLabel.TextColor3 = Color3.new(0,1,0.5)
+elseif Humanoid.Health > (Humanoid.MaxHealth * 0.25) then
+Highlight.FillColor = Color3.new(1,0,0.8)
+Highlight.OutlineColor = Color3.new(1,0,0.8)
+TextLabel.TextColor3 = Color3.new(1,0,0.8)
+elseif Humanoid.Health < (Humanoid.MaxHealth * 0.25) then
+Highlight.FillColor = Color3.new(1,0.2,0.2)
+Highlight.OutlineColor = Color3.new(1,0.2,0.2)
+TextLabel.TextColor3 = Color3.new(1,0.2,0.2)
+end
+end)
 end
 end)
 else
@@ -685,9 +799,9 @@ game:GetService("RunService").RenderStepped:Connect(function()
 TextLabel.Text = "Generator\n" .. v.Progress.Value .. "%"
 local Progress = v.Progress
 if Progress.Value < 27 then
-Highlight.FillColor = Color3.new(0,0,1)
-Highlight.OutlineColor = Color3.new(0,0,1)
-TextLabel.TextColor3 = Color3.new(0,0,1)
+Highlight.FillColor = Color3.new(0,0.3,1)
+Highlight.OutlineColor = Color3.new(0,0.3,1)
+TextLabel.TextColor3 = Color3.new(0,0.3,1)
 elseif Progress.Value < 53 then
 Highlight.FillColor = Color3.fromRGB(0,100,200)
 Highlight.OutlineColor = Color3.fromRGB(0,100,200)
@@ -705,6 +819,29 @@ end)
 end
 end
 end)
+end})
+ESP:AddToggle("MsE",{
+Text = "Minions ESP",
+Default = false,
+Callback = function(v)
+if v then
+for _, v in ipairs(Ingame:GetChildren()) do
+if v:IsA("Model") and v:GetAttribute("Team") == "Killers" and not v:FindFirstChild("Ms_ESP") then
+Text(v, v.Name, Color3.new(1), 14, "Ms_ESP")
+Highlight(v, Color3.new(1), "Ms_ESP")
+end
+end
+MinionsESP = Ingame.ChildAdded:Connect(function(v)
+wait(1)
+if v:IsA("Model") and v:GetAttribute("Team") == "Killers" and not v:FindFirstChild("Ms_ESP") then
+Text(v, v.Name, Color3.new(1), 14, "Ms_ESP")
+Highlight(v, Color3.new(1), "Ms_ESP")
+end
+end)
+else
+MinionsESP:Disconnect()
+Disable("Ms_ESP")
+end
 end})
 ESP:AddToggle("SSTME",{
 Text = "Subspace Tripmine ESP",
@@ -914,6 +1051,45 @@ if _G.MaxFieldOfView then
 game.Players.LocalPlayer.Character.FOVMultipliers.FOVSetting.Value = 1.5
 else
 game.Players.LocalPlayer.Character.FOVMultipliers.FOVSetting.Value = fn
+end
+if _G.AntiCoolLag then
+local partlag = game.Players.LocalPlayer.Character:FindFirstChild("firebrand")
+if not partlag then return end
+if partlag then
+partlag:Destroy()
+end
+end
+end
+if _G.AutoPickup then
+local Map = workspace.Map.Ingame:FindFirstChild("Map")
+if not Map then return end
+for _,v in ipairs(Map:GetChildren()) do
+if v.Name == "Medkit" then
+fireproximityprompt(v.ItemRoot.ProximityPrompt)
+elseif v.Name == "BloxyCola" then
+fireproximityprompt(v.ItemRoot.ProximityPrompt)
+end
+end
+for _,v in ipairs(Ingame:GetChildren()) do
+if v.Name == "Medkit" then
+fireproximityprompt(v.ItemRoot.ProximityPrompt)
+elseif v.Name == "BloxyCola" then
+fireproximityprompt(v.ItemRoot.ProximityPrompt)
+end
+end
+end
+if _G.AntiTrailJohn then
+for _,v in ipairs(workspace.Players.Killers:GetChildren()) do
+if v.Name == "JohnDoe" then
+for _,v2 in ipairs(Ingame:GetChildren()) do
+if v2.Name == v:GetAttribute("Username") .. "JohnDoeTrail" then
+for _,v3 in ipairs(v2:GetChildren()) do
+v3.CanTouch = not _G.AntiTrailJohn
+end
+end
+end
+end
+end
 end
 end)
 
