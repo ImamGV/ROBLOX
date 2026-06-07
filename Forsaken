@@ -406,20 +406,34 @@ end
 -- Ví dụ cách sử dụng (Vòng lặp kiểm tra liên tục mỗi giây)
 
 Players:AddSlider("Tphitbox",{
-Text = "Hitbox Exaggerated M1 Distance",
+Text = "Hitbox Exaggerated Distance",
 Min = 0,
 Default = 5,
-Max = 5,
+Max = 15,
 Rounding = 1,
 Compact = true,
 Callback = function(v)
 _G.HitboxExaggeratedDistance = v
 end})
 Players:AddToggle("Hitbox Exaggerated",{
-Text = "Hitbox Exaggerated M1",
+Text = "Hitbox Exaggerated",
 Default = false,
 Callback = function(v)
 _G.HitboxExaggerated = v
+task.spawn(function()
+while _G.HitboxExaggerated and wait() do
+for _,v in pairs(workspace.Players.Killers:GetChildren()) do
+if v.Parent.Name == "Killers" and v:GetAttribute("Username") == game.Players.LocalPlayer.Name then
+local closest, dist = getClosestSurvivor()
+if closest then
+game.Players.LocalPlayer.Character:FindFirstChild("CollisionHitbox").Position = closest.HumanoidRootPart.Position
+end
+wait(0.2)
+game.Players.LocalPlayer.Character:FindFirstChild("CollisionHitbox").Position = game.Players.LocalPlayer.Character.HumanoidRootPart.Position
+end
+end
+end
+end)
 end})
 local Camera = Tabs.Main:AddLeftGroupbox('Camera Offical')
 local fn = game.Players.LocalPlayer.Character.FOVMultipliers.FOVSetting.Value
@@ -523,17 +537,6 @@ if v and Effects:FindFirstChild("Slowness") then
 Effects.Slowness.Parent = Folder
 elseif Folder:FindFirstChild("Slowness") then
 Folder.Slowness.Parent = Effects
-end
-end})
-Anti:AddToggle("Anti Glitched",{
-Text = "Anti Glitched",
-Default = false,
-Tooltip = "This is features help you cant 'glitched' effect.",
-Callback = function(v)
-if v and KillerEffect:FindFirstChild("Glitched") then
-KillerEffect.Glitched.Parent = Folder
-elseif Folder:FindFirstChild("Glitched") then
-Folder.Glitched.Parent = KillerEffect
 end
 end})
 Anti:AddDivider()
@@ -640,23 +643,72 @@ ESP:AddToggle("GE",{
 Text = "Generator ESP",
 Default = false,
 Callback = function(v)
-if v then
-for _, v in ipairs(workspace:GetDescendants()) do
-if v:IsA("Model") and v.Parent.Name == "Map" and v.Name == "Generator" and not v:FindFirstChild("Generator_ESP") then
-Text(v, v.Name, Color3.new(0,0,1), 14, "Generator_ESP")
-Highlight(v, Color3.new(0,0,1), "Generator_ESP")
-end
-end
-GeneratorESP = workspace.Map.Ingame.Map.DescendantAdded:Connect(function(v)
-if v:IsA("Model") and v.Parent.Name == "Map" and v.Name == "Generator" and not v:FindFirstChild("Generator_ESP") then
-Text(v, v.Name, Color3.new(0,0,1), 14, "Generator_ESP")
-Highlight(v, Color3.new(0,0,1), "Generator_ESP")
+_G.GeneratorESP = v
+game:GetService("RunService").RenderStepped:Connect(function()
+local Map = workspace.Map.Ingame:FindFirstChild("Map")
+if not Map then return end
+for _, v in ipairs(Map:GetChildren()) do
+if v.Name == "Generators" then
+for _,v2 in ipairs(v:GetChildren()) do
+if v2.Name == "Generator" and not v2:FindFirstChild("Generator_ESP") then
+local Billboard = Instance.new("BillboardGui", v2)
+local TextLabel = Instance.new("TextLabel", Billboard)
+local UIStroke = Instance.new("UIStroke", TextLabel)
+--// Billboard \\
+Billboard.AlwaysOnTop = true
+Billboard.Size = UDim2.new(0,400,0,100)
+Billboard.Name = "Generator_ESP"
+Billboard.Active = true
+--// TextLabel \\
+TextLabel.AnchorPoint = Vector2.new(0.5,0.5)
+TextLabel.BackgroundTransparency = 1
+TextLabel.BackgroundColor3 = Color3.new(0,0,0)
+TextLabel.TextColor3 = Color3.new(0,0,1)
+TextLabel.Font = "SourceSansBold"
+TextLabel.TextSize = 14
+TextLabel.TextTransparency = 0
+TextLabel.Visible = true
+TextLabel.Text = "Đạt béo sau khi coi source!:D"
+TextLabel.Size = UDim2.new(1,0,0,0)
+TextLabel.Position = UDim2.new(0.5,0,0.7,-35)
+--// UIStroke \\
+UIStroke.Thickness = 1
+UIStroke.Color = Color3.new()
+UIStroke.Transparency = 0
+local Highlight = Instance.new('Highlight', target)
+--// Highlight \\
+Highlight.DepthMode = Enum.HighlightDepthMode.AlwaysOnTop
+Highlight.FillColor = Color3.new(0,0,1)
+Highlight.OutlineColor = Color3.new(0,0,1)
+Highlight.FillTransparency = 1
+Highlight.OutlineTransparency =  0
+Highlight.Name = "Generator_ESP"
+game:GetService("RunService").RenderStepped:Connect(function()
+TextLabel.Text = "Generator\n" .. v2.Progress.Value .. "%"
+local Progress = v2.Progress
+if Progress.Value < 27 then
+Highlight.FillColor = Color3.new(0,0,1)
+Highlight.OutlineColor = Color3.new(0,0,1)
+TextLabel.TextColor3 = Color3.new(0,0,1)
+elseif Progress.Value < 53 then
+Highlight.FillColor = Color3.fromRGB(0,100,200)
+Highlight.OutlineColor = Color3.fromRGB(0,100,200)
+TextLabel.TextColor3 = Color3.fromRGB(0,100,200)
+elseif Progress.Value < 79 then
+Highlight.FillColor = Color3.fromRGB(0,200,100)
+Highlight.OutlineColor = Color3.fromRGB(0,200,100)
+TextLabel.TextColor3 = Color3.fromRGB(0,200,100)
+elseif Progress.Value < 101 then
+Highlight.FillColor = Color3.fromRGB(0,255,0)
+Highlight.OutlineColor = Color3.fromRGB(0,255,0)
+TextLabel.TextColor3 = Color3.fromRGB(0,255,0)
 end
 end)
-else
-GeneratorESP:Disconnect()
-Disable("Generator_ESP")
 end
+end
+end
+end
+end)
 end})
 ESP:AddToggle("SSTME",{
 Text = "Subspace Tripmine ESP",
@@ -866,18 +918,6 @@ if _G.MaxFieldOfView then
 game.Players.LocalPlayer.Character.FOVMultipliers.FOVSetting.Value = 1.5
 else
 game.Players.LocalPlayer.Character.FOVMultipliers.FOVSetting.Value = fn
-end
-if not _G.HitboxExaggerated then
-for _,v in pairs(workspace.Players.Killers:GetChildren()) do
-if v.Parent.Name == "Killers" and v:GetAttribute("Username") == game.Players.LocalPlayer.Name then
-local closest, dist = getClosestSurvivor()
-if closest then
-game.Players.LocalPlayer.Character:FindFirstChild("CollisionHitbox").Position = closest.HumanoidRootPart.Position
-end
-wait(0.2)
-game.Players.LocalPlayer.Character:FindFirstChild("CollisionHitbox").Position = game.Players.LocalPlayer.Character.HumanoidRootPart.Position
-end
-end
 end
 end)
 
