@@ -362,8 +362,7 @@ end}):AddKeyPicker("AutoInteractKeybind", {
    Mode = Library.IsMobile and "Toggle" or "Hold",
    SyncToggleState = Library.IsMobile
 })
-local Players = game:GetService("Players")
-local LocalPlayer = Players.LocalPlayer
+local LocalPlayer = game.Players.LocalPlayer
 
 local function getClosestSurvivor()
     local character = LocalPlayer.Character
