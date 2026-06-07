@@ -113,11 +113,11 @@ task.spawn(function()
                     local pGui = game.Players.LocalPlayer:FindFirstChild("PlayerGui")
                     if pGui and pGui:FindFirstChild("PuzzleUI") then
                         if _G.FixMode == "Fast Fix (2s)" then
-                            task.wait(1) Library:Notify("Fixing... 1s left", 1) task.wait(1)
+                            for i = 2, 1, -1 do task.wait(1) Library:Notify("Fixing... 1s left", 1) end task.wait(1)
                         elseif _G.FixMode == "Fit Fix (5s)" then
-                            for i = 4, 1, -1 do task.wait(1) Library:Notify("Fixing... " .. i .. "s left", 1) end task.wait(1)
+                            for i = 5, 1, -1 do task.wait(1) Library:Notify("Fixing... " .. i .. "s left", 1) end task.wait(1)
                         else -- Slow Fix (10s)
-                            for i = 9, 1, -1 do task.wait(1) end task.wait(1)
+                            for i = 10, 1, -1 do task.wait(1) end task.wait(1)
                         end
                         if pGui and pGui:FindFirstChild("PuzzleUI") and _G.AutoGen then
                             for _,v in ipairs(workspace["Map"]["Ingame"]["Map"]:GetChildren()) do
@@ -362,6 +362,76 @@ end}):AddKeyPicker("AutoInteractKeybind", {
    Mode = Library.IsMobile and "Toggle" or "Hold",
    SyncToggleState = Library.IsMobile
 })
+local Players = game:GetService("Players")
+local LocalPlayer = Players.LocalPlayer
+
+local function getClosestSurvivor()
+    local character = LocalPlayer.Character
+    if not character or not character:FindFirstChild("HumanoidRootPart") then 
+        return nil 
+    end
+    
+    local myRoot = character.HumanoidRootPart
+    local survivorFolder = workspace:FindFirstChild("Players") and workspace.Players:FindFirstChild("Survivors")
+    
+    if not survivorFolder then
+        warn("Không tìm thấy thư mục Workspace.Players.Survivor!")
+        return nil
+    end
+
+    local closestSurvivor = nil
+    local shortestDistance = math.huge -- Khởi tạo khoảng cách vô hạn
+
+    -- Lặp qua tất cả đối tượng trong folder Survivor
+    for _, survivor in ipairs(survivorFolder:GetChildren()) do
+        -- Kiểm tra xem đối tượng có phải nhân vật/bot hợp lệ và có RootPart không
+        local targetRoot = survivor:FindFirstChild("HumanoidRootPart")
+        local humanoid = survivor:FindFirstChildOfClass("Humanoid")
+        
+        -- Đảm bảo survivor còn sống và không phải là chính mình (nếu mày cũng ở trong đó)
+        if targetRoot and survivor ~= character and (not humanoid or humanoid.Health > 0) then
+            -- Tính khoảng cách bằng Magnitude (Bỏ qua căn bậc hai để tối ưu hơn nữa nếu cần, nhưng Magnitude là đủ tốt rồi)
+            local distance = (myRoot.Position - targetRoot.Position).Magnitude
+            
+            -- So sánh để tìm khoảng cách nhỏ nhất
+            if distance < shortestDistance and distance < (_G.HitboxExaggeratedDistance or 5) then
+                shortestDistance = distance
+                closestSurvivor = survivor
+            end
+        end
+    end
+
+    return closestSurvivor, shortestDistance
+end
+
+-- Ví dụ cách sử dụng (Vòng lặp kiểm tra liên tục mỗi giây)
+
+Players:AddSlider("Tphitbox",{
+Text = "Hitbox Exaggerated M1 Distance",
+Min = 0,
+Default = 5,
+Max = 5,
+Rounding = 1,
+Compact = true,
+Callback = function(v)
+_G.HitboxExaggeratedDistance = v
+end})
+Players:AddToggle("Hitbox Exaggerated",{
+Text = "Hitbox Exaggerated M1",
+Default = false,
+Callback = function(v)
+_G.HitboxExaggerated = v
+InfStamina = game:GetService("RunService").RenderStepped:Connect(function()
+if not _G.HitboxExaggerated then
+local closest, dist = getClosestSurvivor()
+if closest then
+game.Players.LocalPlayer.Character:FindFirstChild("CollisionHitbox").Position = closest.HumanoidRootPart.Position
+end
+wait(0.2)
+game.Players.LocalPlayer.Character:FindFirstChild("CollisionHitbox").Position = game.Players.LocalPlayer.Character.HumanoidRootPart.Position
+end
+end)
+end})
 local Camera = Tabs.Main:AddLeftGroupbox('Camera Offical')
 local fn = game.Players.LocalPlayer.Character.FOVMultipliers.FOVSetting.Value
 Camera:AddToggle("MFOV",{
