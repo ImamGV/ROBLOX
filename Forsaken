@@ -113,7 +113,7 @@ task.spawn(function()
                     local pGui = game.Players.LocalPlayer:FindFirstChild("PlayerGui")
                     if pGui and pGui:FindFirstChild("PuzzleUI") then
                         if _G.FixMode == "Fast Fix (2s)" then
-                            for i = 2, 1, -1 do task.wait(1) Library:Notify("Fixing... 1s left", 1) end task.wait(1)
+                            for i = 2, 1, -1 do task.wait(1) Library:Notify("Fixing... " .. i .. "s left", 1) end task.wait(1)
                         elseif _G.FixMode == "Fit Fix (5s)" then
                             for i = 5, 1, -1 do task.wait(1) Library:Notify("Fixing... " .. i .. "s left", 1) end task.wait(1)
                         else -- Slow Fix (10s)
@@ -198,65 +198,8 @@ Default = false,
 Callback = function(v)
 _G.HideBar = v or false
 end})
-Misc:AddDivider()
-Misc:AddSlider("SizeHeart",{
-Text = "Size shiftlock",
-Min = 10,
-Default = 10,
-Max = 50,
-Rounding = 1,
-Compact = true,
-Callback = function(v)
-_G.SizeHeart = v or 10
-end})
-Misc:AddToggle("EnabledHeart",{
-Text = "Enabled",
-Default = false,
-Callback = function(v)
-_G.Heart = v or false
-end})
 
 local Players = Tabs.Main:AddRightGroupbox('Player')
-
-Players:AddDropdown('SpeedBoostValue', {
-	Values = {'1', '2', '3', '4', '5', 'As fast as possible'},
-	Default = 2,
-	Multi = false,
-	Text = 'Tpwalk',
-	Searchable = false,
-    Callback = function(v)
-_G.SpeedBoostValue = v or '2'
-end})
-
-Players:AddToggle("SpeedBoost",{
-Text = "Enabled tpwalk",
-Default = false,
-Callback = function(v)
-_G.SpeedBoost = v
-while _G.SpeedBoost do
-if _G.SpeedBoostValue == '1' then
-game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame += game.Players.LocalPlayer.Character.Humanoid.MoveDirection * 0.1
-game.Players.LocalPlayer.Character.HumanoidRootPart.CanCollide = true
-elseif _G.SpeedBoostValue == '2' then
-game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame += game.Players.LocalPlayer.Character.Humanoid.MoveDirection * 0.2
-game.Players.LocalPlayer.Character.HumanoidRootPart.CanCollide = true
-elseif _G.SpeedBoostValue == '3' then
-game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame += game.Players.LocalPlayer.Character.Humanoid.MoveDirection * 0.3
-game.Players.LocalPlayer.Character.HumanoidRootPart.CanCollide = true
-elseif _G.SpeedBoostValue == '4' then
-game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame += game.Players.LocalPlayer.Character.Humanoid.MoveDirection * 0.4
-game.Players.LocalPlayer.Character.HumanoidRootPart.CanCollide = true
-elseif _G.SpeedBoostValue == '5' then
-game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame += game.Players.LocalPlayer.Character.Humanoid.MoveDirection * 0.5
-game.Players.LocalPlayer.Character.HumanoidRootPart.CanCollide = true
-elseif _G.SpeedBoostValue == 'As fast as possible' then
-game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame += game.Players.LocalPlayer.Character.Humanoid.MoveDirection * 2.5
-game.Players.LocalPlayer.Character.HumanoidRootPart.CanCollide = true
-end
-wait()
-end
-end})
-Players:AddDivider()
 StaminaScript = require(game:GetService("ReplicatedStorage").Systems.Character.Game.Sprinting)
 Players:AddLabel("Exclusively for your survivor")
 Players:AddSlider("SurvivorMaxStamina",{
@@ -412,7 +355,7 @@ end
 -- Ví dụ cách sử dụng (Vòng lặp kiểm tra liên tục mỗi giây)
 
 Players:AddSlider("Tphitbox",{
-Text = "Hitbox Exaggerated Distance",
+Text = "AHitbox distancs ",
 Min = 0,
 Default = 5,
 Max = 15,
@@ -654,9 +597,9 @@ Highlight.FillColor = Color3.new(0,1,0.5)
 Highlight.OutlineColor = Color3.new(0,1,0.5)
 TextLabel.TextColor3 = Color3.new(0,1,0.5)
 elseif Humanoid.Health > (Humanoid.MaxHealth * 0.25) then
-Highlight.FillColor = Color3.new(1,0,0.8)
-Highlight.OutlineColor = Color3.new(1,0,0.8)
-TextLabel.TextColor3 = Color3.new(1,0,0.8)
+Highlight.FillColor = Color3.new(0.8,0.8,0)
+Highlight.OutlineColor = Color3.new(0.8,0.8,0)
+TextLabel.TextColor3 = Color3.new(0.8,0.8,0)
 elseif Humanoid.Health < (Humanoid.MaxHealth * 0.25) then
 Highlight.FillColor = Color3.new(1,0.2,0.2)
 Highlight.OutlineColor = Color3.new(1,0.2,0.2)
@@ -713,9 +656,9 @@ Highlight.FillColor = Color3.new(0,1,0.5)
 Highlight.OutlineColor = Color3.new(0,1,0.5)
 TextLabel.TextColor3 = Color3.new(0,1,0.5)
 elseif Humanoid.Health > (Humanoid.MaxHealth * 0.25) then
-Highlight.FillColor = Color3.new(1,0,0.8)
-Highlight.OutlineColor = Color3.new(1,0,0.8)
-TextLabel.TextColor3 = Color3.new(1,0,0.8)
+Highlight.FillColor = Color3.new(0.8,0.8)
+Highlight.OutlineColor = Color3.new(0.8,0.8,0)
+TextLabel.TextColor3 = Color3.new(0.8,0.8)
 elseif Humanoid.Health < (Humanoid.MaxHealth * 0.25) then
 Highlight.FillColor = Color3.new(1,0.2,0.2)
 Highlight.OutlineColor = Color3.new(1,0.2,0.2)
@@ -759,14 +702,13 @@ ItemsESP:Disconnect()
 Disable("Items_ESP")
 end
 end})
+local Map = workspace.Map.Ingame:FindFirstChild("Map")
+if not Map then return end
 ESP:AddToggle("GE",{
 Text = "Generator ESP",
 Default = false,
 Callback = function(v)
-_G.GeneratorESP = v
-game:GetService("RunService").RenderStepped:Connect(function()
-local Map = workspace.Map.Ingame:FindFirstChild("Map")
-if not Map then return end
+if v then
 for _, v in ipairs(Map:GetChildren()) do
 if v.Name == "Generator" and not v:FindFirstChild("Generator_ESP") then
 local Billboard = Instance.new("BillboardGui", v)
@@ -824,7 +766,68 @@ end
 end)
 end
 end
+else
+GeneratorESP = Map.ChildAdded:Connect(function(v)
+if v.Name == "Generator" and not v:FindFirstChild("Generator_ESP") then
+local Billboard = Instance.new("BillboardGui", v)
+local TextLabel = Instance.new("TextLabel", Billboard)
+local UIStroke = Instance.new("UIStroke", TextLabel)
+--// Billboard \\
+Billboard.AlwaysOnTop = true
+Billboard.Size = UDim2.new(0,400,0,100)
+Billboard.Name = "Generator_ESP"
+Billboard.Active = true
+--// TextLabel \\
+TextLabel.AnchorPoint = Vector2.new(0.5,0.5)
+TextLabel.BackgroundTransparency = 1
+TextLabel.BackgroundColor3 = Color3.new(0,0,0)
+TextLabel.TextColor3 = Color3.new(0,0,1)
+TextLabel.Font = "SourceSansBold"
+TextLabel.TextSize = 14
+TextLabel.TextTransparency = 0
+TextLabel.Visible = true
+TextLabel.Text = "Đạt béo sau khi coi source!:D"
+TextLabel.Size = UDim2.new(1,0,0,0)
+TextLabel.Position = UDim2.new(0.5,0,0.7,-35)
+--// UIStroke \\
+UIStroke.Thickness = 1
+UIStroke.Color = Color3.new()
+UIStroke.Transparency = 0
+local Highlight = Instance.new('Highlight', v)
+--// Highlight \\
+Highlight.DepthMode = Enum.HighlightDepthMode.AlwaysOnTop
+Highlight.FillColor = Color3.new(0,0,1)
+Highlight.OutlineColor = Color3.new(0,0,1)
+Highlight.FillTransparency = 1
+Highlight.OutlineTransparency =  0
+Highlight.Name = "Generator_ESP"
+game:GetService("RunService").RenderStepped:Connect(function()
+TextLabel.Text = "Generator\n" .. v.Progress.Value .. "%"
+local Progress = v.Progress
+if Progress.Value < 27 then
+Highlight.FillColor = Color3.new(0,0.3,1)
+Highlight.OutlineColor = Color3.new(0,0.3,1)
+TextLabel.TextColor3 = Color3.new(0,0.3,1)
+elseif Progress.Value < 53 then
+Highlight.FillColor = Color3.fromRGB(0,100,200)
+Highlight.OutlineColor = Color3.fromRGB(0,100,200)
+TextLabel.TextColor3 = Color3.fromRGB(0,100,200)
+elseif Progress.Value < 79 then
+Highlight.FillColor = Color3.fromRGB(0,200,100)
+Highlight.OutlineColor = Color3.fromRGB(0,200,100)
+TextLabel.TextColor3 = Color3.fromRGB(0,200,100)
+elseif Progress.Value < 101 then
+Highlight.FillColor = Color3.fromRGB(0,255,0)
+Highlight.OutlineColor = Color3.fromRGB(0,255,0)
+TextLabel.TextColor3 = Color3.fromRGB(0,255,0)
+end
 end)
+end
+end)
+else
+Disable("Generator_ESP")
+GeneratorESP:Disconnect()
+end
 end})
 ESP:AddToggle("MsE",{
 Text = "Minions ESP",
