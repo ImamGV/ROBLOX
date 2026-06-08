@@ -766,7 +766,6 @@ end
 end)
 end
 end
-else
 GeneratorESP = Map.ChildAdded:Connect(function(v)
 if v.Name == "Generator" and not v:FindFirstChild("Generator_ESP") then
 local Billboard = Instance.new("BillboardGui", v)
